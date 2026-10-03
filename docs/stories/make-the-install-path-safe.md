@@ -4,7 +4,6 @@ title: Make the install path safe
 tags:
   - docs
 summary: Document how style names resolve so an unresolvable outputStyle stops failing silently
-status: done
 tasks:
   - cos-6
 generated:
@@ -45,7 +44,7 @@ and conclude the styles do not work.
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [COS-6](../../backlog/tasks/cos-6%20-%20Document-the-install-path-that-actually-resolves.md) | Document the install path that actually resolves | Done |
+| [COS-6](../../.quest/tasks/COS-6.json) | Document the install path that actually resolves | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

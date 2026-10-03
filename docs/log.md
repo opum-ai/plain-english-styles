@@ -10,6 +10,7 @@
 - 2026-08-16T10:08:47-05:00 8830993390de5a8fe592dab4e499ac5a541069fb Record the docs commit in the lore log
 - 2026-08-16T10:08:47-05:00 a3e8a9cc0b0e4fa055254e9cd5db7580d0e1e7be Correct the docs that said improve persists nothing
 - 2026-08-16T16:04:38-05:00 2d4bcb4b917b84c636ce20b86f286b0d20afb056 Close out the story and advance the campaign cursor
+- 2026-08-16T16:04:38-05:00 8a76f13629aac5c95abc3abdd6dc3ed01d03bc3a Validate the optimizer's winner on a split it never sees
 - 2026-08-16T17:45:40-05:00 ac1a161adc1c51c20cac93a23778e35559720ab6 Fix seven findings from the branch review
 - 2026-08-16T17:45:40-05:00 bb8c6fdcf742090f9dcde0e3e6a808f819c5eb2d Guard style files against their contracts, and settle the caps question
 - 2026-08-16T18:38:38-05:00 14d72ea77ef03a715c242c526929b1e976e7010f Fix ten findings from the branch review
@@ -38,13 +39,18 @@
 - 2026-08-17T00:49:59-05:00 fc038753d9c8b810e1036e1cb7c2e45055358594 Record the per-cell flush in the docs bundle and the ledger
 - 2026-08-17T00:52:00-05:00 f6c098f122e15a8f07170ef424aea43ee42ba7d9 docs(COS-12): archive consumed backlog-campaign handover and record the merge
 - 2026-08-17T01:42:11-05:00 0d94ed90742e7da3b552847809d8b212adccfe6b Re-derive every published figure the scorer change moves, and label the rest
+- 2026-08-17T01:42:11-05:00 1fc7fb1ab6baf260ed9b2cb9e7c8e0e7cd2e8412 Correct the ledger's own claim about what the re-segmentation moved
 - 2026-08-17T01:42:11-05:00 2a354d3f07fec3782cac8a92642e69d22424728c chore(COS-10): record the review outcome in the campaign tracker
+- 2026-08-17T01:42:11-05:00 3a6df76953415b5b2ad6c66e91a3d7f6c19117cc Correct the two live docs the re-segmentation also moved
 - 2026-08-17T01:42:11-05:00 a00609741475a2a489b79cb6a1c933d8432cb371 chore(COS-10): record the out-of-scope score crash in the doc log
+- 2026-08-17T08:07:13-05:00 1c6a34ce05f0098c21ba2f1e372044dcd139ade6 Apply the branch review: pair the optimizer's verdict, and stop discarding scores
 - 2026-08-17T08:07:13-05:00 c04d1e248cb8c75c2b56489ec6e26736a1e77f52 Correct the one published conclusion that pooling an aborted cell had reversed
+- 2026-08-17T08:37:10-05:00 170135bf9b5702b13f9e7c48ddf1286a47bcbe04 Apply the branch review: make npm test work, and stop the guard misfiring
 - 2026-08-17T08:37:10-05:00 1e50a79493105fae26cef4787c98ac2038de4971 chore(COS-13): record the review-fix commit in the doc log
 - 2026-08-17T08:37:10-05:00 5aaa50b7bb978f728e2aee432f59bef25baf63b0 Make the agentic fixture green before and after a correct fix
 - 2026-08-17T08:37:10-05:00 5f80341d6d23019a6cb28004f5ff80544eb798b7 chore(COS-13): record the review-pass commits in the doc log
 - 2026-08-17T08:37:10-05:00 8d503ba49552445fcd2d393dcdcd0ff3cf979b08 chore(COS-13): record the branch's commits in the doc log
+- 2026-08-17T08:37:10-05:00 8d68fe21449246ca73da9b1c05f46b1fc2679f51 Bound the fixture caveat by reach, not by check
 - 2026-08-17T08:37:10-05:00 aa60eb7a052b5411d5abb8958c364f043cc060fc chore(COS-13): record the tracker and summary updates in the doc log
 - 2026-08-17T08:43:43-05:00 a11018a170d738964283188c8f1248f7a955c520 Open two follow-ups from the COS-13 review, and record why they were appended
 - 2026-08-17T09:06:31-05:00 cb638d41a6dd6ec800bab9ae13420a867cb4ea68 chore(COS-14): record the branch's first commit in the doc log
@@ -84,6 +90,7 @@
 - 2026-08-19T22:42:19-05:00 3813595074903fddb2ce30ce09005df94dee2694 Ship beginner's three-edit rewrite, each edit measured on its own
 - 2026-08-19T22:42:48-05:00 f9e162d720139f874f6f922d1e635fe6363e4131 Re-sync docs/log.md after COS-16's rebase-merge
 - 2026-08-26T08:38:07-05:00 a86ada6646665f963fd3c3ff281ad26e782bc24d Test intermediate and advanced for beginner's four defects
+- 2026-08-26T08:38:07-05:00 af1caf26384c350138ac69b1a66223e8bcfd10ae Withdraw an over-length share that did not reproduce
 - 2026-08-26T08:38:41-05:00 2dfe318d1051570223728a8bf6ea57ef03765df5 Re-sync docs/log.md after COS-18's rebase-merge
 - 2026-08-27T08:19:06-05:00 c2f6f8b10502b4e65e83f13081b252dda6792eea Complete the four-tier beginner row on Haiku and Fable
 - 2026-08-27T08:19:06-05:00 f0c24759ae21f5cbc11e878968e6e79827dbe52e Fix three defects the branch review found
@@ -96,183 +103,27 @@
 - 2026-08-27T21:46:13-05:00 af27ed1f5d70b914897eae230849ca6a2b7ec876 Finish COS-21: leg 3's last two arms, narrow the reinforcement ADR
 - 2026-08-27T21:46:38-05:00 77cc9eee91561b72b83fd50dd6f60adf33ec5658 Re-sync docs/log.md after COS-21's rebase-merge
 - 2026-08-28T09:24:00-05:00 64a62f904514c7bb91b909aa3228087c50fe11b5 Raise 10 of 12 four-tier judge cells to n=150, add single-sample intervals
+- 2026-08-28T09:24:00-05:00 bb826095416b6418e2a4861a94733f50d5bdda4b Fix pseudo-replication in singleSampleInterval, redo the clean-split re-check
 - 2026-08-28T09:24:32-05:00 77b9d66b4f47910955e80d32c3d032f5516be3e3 Re-sync docs/log.md after COS-19's rebase-merge
 - 2026-08-28T15:05:44-05:00 d8281297e9e954edb7112d75c93ecabf679d43e6 Re-sync docs/log.md after COS-1's rebase-merge
 - 2026-08-31T14:14:05-05:00 7f22c2846a13463a82075473b84168547244e716 Record COS-28's resolution in the style-contracts spec
 - 2026-08-31T14:14:35-05:00 c27bbfa2f6ed7b433103040ed18235c81d6bba67 Re-sync docs/log.md after COS-28's rebase-merge
 - 2026-08-31T14:43:25-05:00 c17d33784f121530e257255c0c78c1d0ec9143e5 Re-sync docs/log.md after COS-29's rebase-merge
-
-## docs/adr
-
-- 2026-08-16T07:50:37-05:00 f3d1a890d7acb1df476114cd062fc43e332ea623 Fill measurement gaps; open backlog; author the lore bundle
-- 2026-08-16T08:14:52-05:00 3370e4d5169f1ce8c937bccdd200627a9b9a9c9e Complete the docs bundle; fix contracts that graded unwritten rules
-- 2026-08-16T16:04:38-05:00 8a76f13629aac5c95abc3abdd6dc3ed01d03bc3a Validate the optimizer's winner on a split it never sees
-- 2026-08-16T18:38:38-05:00 14d72ea77ef03a715c242c526929b1e976e7010f Fix ten findings from the branch review
-- 2026-08-16T19:26:40-05:00 946c630b7e6192a89e7b3e4b4a63bebfbc52abcb Measure all three styles on Fable, and settle whether verbosity tracks tier
-- 2026-08-16T19:26:40-05:00 e13835266201d02fce61c139482100af7e1ba80e Correct four figures found by re-deriving them from the saved rows
-- 2026-08-17T11:02:10-05:00 fa144055e32506f2f17f0a7460b0310af6a57875 Strip cost from the published record
-- 2026-08-27T21:46:13-05:00 af27ed1f5d70b914897eae230849ca6a2b7ec876 Finish COS-21: leg 3's last two arms, narrow the reinforcement ADR
-
-## docs/epics
-
-- 2026-08-16T07:50:37-05:00 f3d1a890d7acb1df476114cd062fc43e332ea623 Fill measurement gaps; open backlog; author the lore bundle
-- 2026-08-16T08:14:52-05:00 3370e4d5169f1ce8c937bccdd200627a9b9a9c9e Complete the docs bundle; fix contracts that graded unwritten rules
-- 2026-08-16T18:38:38-05:00 14d72ea77ef03a715c242c526929b1e976e7010f Fix ten findings from the branch review
-- 2026-08-16T19:26:40-05:00 946c630b7e6192a89e7b3e4b4a63bebfbc52abcb Measure all three styles on Fable, and settle whether verbosity tracks tier
-- 2026-08-16T19:26:40-05:00 c53b282ac6669db49ad5d715321c3c8c221104c4 Fix nine findings from the branch review
-- 2026-08-16T21:50:29-05:00 255072eafe12406bcd477e55a7102fd37501c9cf Rewrite beginner's style rules, and measure that length moved and the judge did not
-- 2026-08-16T21:50:29-05:00 31433b8df7c108b0b6ca363d2f2de8d6d6466f86 Fix eight published figures the branch review caught, and recount the one that mattered
-- 2026-08-16T22:52:54-05:00 7c269a138a0c74c401c571ec918e50c80eb4e3ad Open twelve follow-up issues for everything the campaign recorded but never tested
-- 2026-08-17T11:02:10-05:00 fa144055e32506f2f17f0a7460b0310af6a57875 Strip cost from the published record
-- 2026-08-18T07:09:33-05:00 9081f33f51157e7b083ca6b12bbe8cd653d92866 Correct beginner's judge figures at the sample size COS-4's claims needed
-- 2026-08-19T22:42:19-05:00 0a53fae1f85ff6157df5dc12829e932d85af249a Fix the review's findings on COS-16's published record
-- 2026-08-19T22:42:19-05:00 3813595074903fddb2ce30ce09005df94dee2694 Ship beginner's three-edit rewrite, each edit measured on its own
-- 2026-08-27T08:19:06-05:00 c2f6f8b10502b4e65e83f13081b252dda6792eea Complete the four-tier beginner row on Haiku and Fable
-- 2026-08-27T08:19:06-05:00 f0c24759ae21f5cbc11e878968e6e79827dbe52e Fix three defects the branch review found
-- 2026-08-28T09:24:00-05:00 64a62f904514c7bb91b909aa3228087c50fe11b5 Raise 10 of 12 four-tier judge cells to n=150, add single-sample intervals
+- 2026-08-31T15:06:26-05:00 d050f65fbb87c2c74e89f1cb5f5d8fbd903f18a4 Re-sync docs/log.md after COS-30's rebase-merge
 
 ## docs/reference
 
-- 2026-08-16T07:50:37-05:00 f3d1a890d7acb1df476114cd062fc43e332ea623 Fill measurement gaps; open backlog; author the lore bundle
-- 2026-08-16T08:14:52-05:00 3370e4d5169f1ce8c937bccdd200627a9b9a9c9e Complete the docs bundle; fix contracts that graded unwritten rules
-- 2026-08-16T10:08:47-05:00 1daff4da3cbc782774fec35fe260b30756305eee Fix five findings from the branch review
-- 2026-08-16T10:08:47-05:00 a3e8a9cc0b0e4fa055254e9cd5db7580d0e1e7be Correct the docs that said improve persists nothing
-- 2026-08-16T16:04:38-05:00 8a76f13629aac5c95abc3abdd6dc3ed01d03bc3a Validate the optimizer's winner on a split it never sees
-- 2026-08-16T17:45:40-05:00 bb8c6fdcf742090f9dcde0e3e6a808f819c5eb2d Guard style files against their contracts, and settle the caps question
-- 2026-08-16T18:38:38-05:00 14d72ea77ef03a715c242c526929b1e976e7010f Fix ten findings from the branch review
-- 2026-08-16T18:38:38-05:00 df1f99899e46883134e806ee2bd6011fe03908a0 Measure all three styles on Haiku, and correct what a four-cell probe claimed
-- 2026-08-16T19:26:40-05:00 946c630b7e6192a89e7b3e4b4a63bebfbc52abcb Measure all three styles on Fable, and settle whether verbosity tracks tier
-- 2026-08-16T19:26:40-05:00 b506e49dab163984e28c4f6c539a6f8d4217469e Say what the seam counts actually counted
-- 2026-08-16T19:26:40-05:00 c53b282ac6669db49ad5d715321c3c8c221104c4 Fix nine findings from the branch review
-- 2026-08-16T20:39:31-05:00 1c35697173274d087821bfffdb3991cea5ce3320 Fix eleven review findings, including a regression this branch introduced
-- 2026-08-16T20:39:31-05:00 7d21c5a7e532fc9b571bdf697f9b236a0aabbcc8 Write the two missing style rules, and measure that they do not close the gap
-- 2026-08-16T21:50:29-05:00 255072eafe12406bcd477e55a7102fd37501c9cf Rewrite beginner's style rules, and measure that length moved and the judge did not
-- 2026-08-16T21:50:29-05:00 31433b8df7c108b0b6ca363d2f2de8d6d6466f86 Fix eight published figures the branch review caught, and recount the one that mattered
-- 2026-08-17T00:49:59-05:00 275dcf1a3cc3ad6b64d3fabb8eddb0a3c035b15e Say which command flushes per cell and which per split
-- 2026-08-17T00:49:59-05:00 b7355016418f832464f8e463fdab4a86c50eeec4 Label a partial run everywhere it can be read, and fix improve's flush order
-- 2026-08-17T00:49:59-05:00 fc038753d9c8b810e1036e1cb7c2e45055358594 Record the per-cell flush in the docs bundle and the ledger
-- 2026-08-17T01:42:11-05:00 0d94ed90742e7da3b552847809d8b212adccfe6b Re-derive every published figure the scorer change moves, and label the rest
-- 2026-08-17T01:42:11-05:00 1fc7fb1ab6baf260ed9b2cb9e7c8e0e7cd2e8412 Correct the ledger's own claim about what the re-segmentation moved
-- 2026-08-17T08:07:13-05:00 c04d1e248cb8c75c2b56489ec6e26736a1e77f52 Correct the one published conclusion that pooling an aborted cell had reversed
-- 2026-08-17T08:37:10-05:00 170135bf9b5702b13f9e7c48ddf1286a47bcbe04 Apply the branch review: make npm test work, and stop the guard misfiring
-- 2026-08-17T08:37:10-05:00 5aaa50b7bb978f728e2aee432f59bef25baf63b0 Make the agentic fixture green before and after a correct fix
-- 2026-08-17T08:37:10-05:00 8d68fe21449246ca73da9b1c05f46b1fc2679f51 Bound the fixture caveat by reach, not by check
-- 2026-08-17T11:02:10-05:00 a1fc197d27f2af465ae4b0ee64076bd2d02c41f7 Close the guard's high end, and keep the reply a wedged turn had started
-- 2026-08-17T11:02:10-05:00 a2c911b8ee8d7b45eca151ec3c20fc86384348f3 Repair the table the cost-column removal broke, and three more sweep defects
-- 2026-08-17T11:02:10-05:00 b83bb2079ad02396c81d23cb8d983f6bb4070c1d Say that the guard bounds a cell, not a run
-- 2026-08-17T11:02:10-05:00 fa144055e32506f2f17f0a7460b0310af6a57875 Strip cost from the published record
-- 2026-08-17T11:32:23-05:00 163d0b06cb9692f86e79026852370034bb094fac Record the third pass on two_options_max, and what re-scoring moved
-- 2026-08-17T11:32:23-05:00 9a8bfd23778996dbb8c69be703317c508678b984 Settle the published figures by model instead of by provenance
 - 2026-08-17T11:32:23-05:00 c2365142cb71ce797b73959a4ba1fe3096206220 Quote the moved reply verbatim, and record the review round
-- 2026-08-17T11:32:23-05:00 f442aa6579bbc0720f70f2d23caf5b72f4a72f50 Correct the re-score denominator, and record why the connectives went
-- 2026-08-17T13:13:47-05:00 4e2b45e40240d67b5592d545699ff37c0dff137b Record what 720 judge calls established about the judge
-- 2026-08-17T13:13:47-05:00 774a8972b58f4a461a13a2c9b7d1a9adea537b32 Say which style the sample sizes are for, in all four places that quote them
-- 2026-08-17T14:12:09-05:00 f8d77d896ea8065cd5768eca4da569886dfcc999 Correct the five published figures the gloss fix moves
-- 2026-08-18T07:09:33-05:00 9081f33f51157e7b083ca6b12bbe8cd653d92866 Correct beginner's judge figures at the sample size COS-4's claims needed
-- 2026-08-18T09:43:21-05:00 65c27e08e84362461bdd30d02f5d3b02b55ed9d3 Reconcile FINDINGS.md's COS-4 table against the implemented method
 - 2026-08-18T12:21:11-05:00 db5a9f490848179fc9c0fcf06cd465d7422cc3b8 Bound the judge and rewrite calls so a stalled grader cannot hang a run
-- 2026-08-19T22:42:19-05:00 0a53fae1f85ff6157df5dc12829e932d85af249a Fix the review's findings on COS-16's published record
-- 2026-08-19T22:42:19-05:00 3813595074903fddb2ce30ce09005df94dee2694 Ship beginner's three-edit rewrite, each edit measured on its own
-- 2026-08-26T08:38:07-05:00 a86ada6646665f963fd3c3ff281ad26e782bc24d Test intermediate and advanced for beginner's four defects
-- 2026-08-26T08:38:07-05:00 af1caf26384c350138ac69b1a66223e8bcfd10ae Withdraw an over-length share that did not reproduce
-- 2026-08-27T08:19:06-05:00 c2f6f8b10502b4e65e83f13081b252dda6792eea Complete the four-tier beginner row on Haiku and Fable
-- 2026-08-27T08:19:06-05:00 f0c24759ae21f5cbc11e878968e6e79827dbe52e Fix three defects the branch review found
-- 2026-08-27T17:00:16-05:00 9dbbf18cdf91f3a5509cfef2569bfb7ae1ad1afc Correct session 30's non-errored cell count
-- 2026-08-27T17:00:16-05:00 eb0da72846fb9f2bfe10cb656db3fe295f9fe350 Measure COS-21's first leg: beginner x Opus, five variants, 750 cells
-- 2026-08-28T09:24:00-05:00 64a62f904514c7bb91b909aa3228087c50fe11b5 Raise 10 of 12 four-tier judge cells to n=150, add single-sample intervals
-- 2026-08-28T09:24:00-05:00 bb826095416b6418e2a4861a94733f50d5bdda4b Fix pseudo-replication in singleSampleInterval, redo the clean-split re-check
 
 ## docs/runbooks
 
-- 2026-08-16T07:50:37-05:00 f3d1a890d7acb1df476114cd062fc43e332ea623 Fill measurement gaps; open backlog; author the lore bundle
-- 2026-08-16T08:14:52-05:00 3370e4d5169f1ce8c937bccdd200627a9b9a9c9e Complete the docs bundle; fix contracts that graded unwritten rules
-- 2026-08-16T10:08:47-05:00 1daff4da3cbc782774fec35fe260b30756305eee Fix five findings from the branch review
-- 2026-08-16T10:08:47-05:00 a3e8a9cc0b0e4fa055254e9cd5db7580d0e1e7be Correct the docs that said improve persists nothing
-- 2026-08-16T16:04:38-05:00 8a76f13629aac5c95abc3abdd6dc3ed01d03bc3a Validate the optimizer's winner on a split it never sees
 - 2026-08-16T16:04:38-05:00 e0db376cdaf3957ff36a413dd063a83857c374f6 Show the incumbent's numbers on the runbook's rejection example
-- 2026-08-16T17:45:40-05:00 ac1a161adc1c51c20cac93a23778e35559720ab6 Fix seven findings from the branch review
-- 2026-08-17T00:49:59-05:00 fc038753d9c8b810e1036e1cb7c2e45055358594 Record the per-cell flush in the docs bundle and the ledger
-- 2026-08-17T08:07:13-05:00 1c6a34ce05f0098c21ba2f1e372044dcd139ade6 Apply the branch review: pair the optimizer's verdict, and stop discarding scores
-- 2026-08-17T08:07:13-05:00 c04d1e248cb8c75c2b56489ec6e26736a1e77f52 Correct the one published conclusion that pooling an aborted cell had reversed
-- 2026-08-17T11:02:10-05:00 fa144055e32506f2f17f0a7460b0310af6a57875 Strip cost from the published record
-- 2026-08-17T13:13:47-05:00 4e2b45e40240d67b5592d545699ff37c0dff137b Record what 720 judge calls established about the judge
-- 2026-08-17T13:13:47-05:00 774a8972b58f4a461a13a2c9b7d1a9adea537b32 Say which style the sample sizes are for, in all four places that quote them
 
 ## docs/specs
 
-- 2026-08-16T08:14:52-05:00 3370e4d5169f1ce8c937bccdd200627a9b9a9c9e Complete the docs bundle; fix contracts that graded unwritten rules
 - 2026-08-16T17:45:40-05:00 a092b844c6457f1e756851bc27aab0519dfc518e Quote the over-cap rates instead of rounding them to one figure
-- 2026-08-16T17:45:40-05:00 ac1a161adc1c51c20cac93a23778e35559720ab6 Fix seven findings from the branch review
-- 2026-08-16T17:45:40-05:00 bb8c6fdcf742090f9dcde0e3e6a808f819c5eb2d Guard style files against their contracts, and settle the caps question
-- 2026-08-16T18:38:38-05:00 14d72ea77ef03a715c242c526929b1e976e7010f Fix ten findings from the branch review
-- 2026-08-16T18:38:38-05:00 df1f99899e46883134e806ee2bd6011fe03908a0 Measure all three styles on Haiku, and correct what a four-cell probe claimed
-- 2026-08-16T19:26:40-05:00 c53b282ac6669db49ad5d715321c3c8c221104c4 Fix nine findings from the branch review
-- 2026-08-16T19:26:40-05:00 f67772d495ad2f610615ec6c3087190030cc06b0 Carry the fourth tier into the audience-level spec
-- 2026-08-16T21:50:29-05:00 255072eafe12406bcd477e55a7102fd37501c9cf Rewrite beginner's style rules, and measure that length moved and the judge did not
-- 2026-08-16T21:50:29-05:00 ba925960020d5a98b42a4d21a74341a668d481f8 Put the superseded length claims in the past tense, and say what replaced them
-- 2026-08-17T01:42:11-05:00 3a6df76953415b5b2ad6c66e91a3d7f6c19117cc Correct the two live docs the re-segmentation also moved
-- 2026-08-17T11:02:10-05:00 fa144055e32506f2f17f0a7460b0310af6a57875 Strip cost from the published record
-- 2026-08-17T14:12:09-05:00 606ee237939ba434ce518d39c71840194640d083 Let codeOnRequest lift the whole cap, and see a gloss through bold
-- 2026-08-17T14:12:09-05:00 f8d77d896ea8065cd5768eca4da569886dfcc999 Correct the five published figures the gloss fix moves
-- 2026-08-31T14:14:05-05:00 7f22c2846a13463a82075473b84168547244e716 Record COS-28's resolution in the style-contracts spec
 
 ## docs/stories
 
-- 2026-08-16T07:50:37-05:00 f3d1a890d7acb1df476114cd062fc43e332ea623 Fill measurement gaps; open backlog; author the lore bundle
-- 2026-08-16T08:08:38-05:00 8d642df3c47fd307122da86cf409fa35a174ca47 Add COS-7: measure the styles on Fable
-- 2026-08-16T08:14:52-05:00 3370e4d5169f1ce8c937bccdd200627a9b9a9c9e Complete the docs bundle; fix contracts that graded unwritten rules
-- 2026-08-16T09:19:32-05:00 a06f187192277fba4b699f678ea140937d2335a8 Document how a style name resolves, and how to prove one loaded
-- 2026-08-16T10:08:47-05:00 a3e8a9cc0b0e4fa055254e9cd5db7580d0e1e7be Correct the docs that said improve persists nothing
-- 2026-08-16T16:04:38-05:00 2d4bcb4b917b84c636ce20b86f286b0d20afb056 Close out the story and advance the campaign cursor
-- 2026-08-16T17:45:40-05:00 bb8c6fdcf742090f9dcde0e3e6a808f819c5eb2d Guard style files against their contracts, and settle the caps question
-- 2026-08-16T18:38:38-05:00 14d72ea77ef03a715c242c526929b1e976e7010f Fix ten findings from the branch review
-- 2026-08-16T18:38:38-05:00 df1f99899e46883134e806ee2bd6011fe03908a0 Measure all three styles on Haiku, and correct what a four-cell probe claimed
-- 2026-08-16T19:26:40-05:00 946c630b7e6192a89e7b3e4b4a63bebfbc52abcb Measure all three styles on Fable, and settle whether verbosity tracks tier
-- 2026-08-16T19:26:40-05:00 b506e49dab163984e28c4f6c539a6f8d4217469e Say what the seam counts actually counted
-- 2026-08-16T19:26:40-05:00 c53b282ac6669db49ad5d715321c3c8c221104c4 Fix nine findings from the branch review
-- 2026-08-16T19:26:40-05:00 e13835266201d02fce61c139482100af7e1ba80e Correct four figures found by re-deriving them from the saved rows
-- 2026-08-16T19:30:03-05:00 e48a48dbd30d55bc086c83b037d40736bb6a1aab Archive session 6's handover, record COS-7's merge SHA, and fix two of my own claims
-- 2026-08-16T20:39:31-05:00 1c35697173274d087821bfffdb3991cea5ce3320 Fix eleven review findings, including a regression this branch introduced
-- 2026-08-16T20:39:31-05:00 7d21c5a7e532fc9b571bdf697f9b236a0aabbcc8 Write the two missing style rules, and measure that they do not close the gap
-- 2026-08-16T21:50:29-05:00 255072eafe12406bcd477e55a7102fd37501c9cf Rewrite beginner's style rules, and measure that length moved and the judge did not
-- 2026-08-16T21:50:29-05:00 31433b8df7c108b0b6ca363d2f2de8d6d6466f86 Fix eight published figures the branch review caught, and recount the one that mattered
-- 2026-08-16T21:50:29-05:00 af750a40f9da94741dafaea744d079df440b3499 Mark the four-tier table's beginner row as history, and the tier word counts too
-- 2026-08-16T21:50:29-05:00 ba925960020d5a98b42a4d21a74341a668d481f8 Put the superseded length claims in the past tense, and say what replaced them
-- 2026-08-16T22:52:54-05:00 7c269a138a0c74c401c571ec918e50c80eb4e3ad Open twelve follow-up issues for everything the campaign recorded but never tested
-- 2026-08-17T00:49:59-05:00 fc038753d9c8b810e1036e1cb7c2e45055358594 Record the per-cell flush in the docs bundle and the ledger
-- 2026-08-17T01:42:11-05:00 0d94ed90742e7da3b552847809d8b212adccfe6b Re-derive every published figure the scorer change moves, and label the rest
-- 2026-08-17T01:42:11-05:00 1fc7fb1ab6baf260ed9b2cb9e7c8e0e7cd2e8412 Correct the ledger's own claim about what the re-segmentation moved
-- 2026-08-17T01:42:11-05:00 3a6df76953415b5b2ad6c66e91a3d7f6c19117cc Correct the two live docs the re-segmentation also moved
-- 2026-08-17T08:07:13-05:00 1c6a34ce05f0098c21ba2f1e372044dcd139ade6 Apply the branch review: pair the optimizer's verdict, and stop discarding scores
-- 2026-08-17T08:07:13-05:00 c04d1e248cb8c75c2b56489ec6e26736a1e77f52 Correct the one published conclusion that pooling an aborted cell had reversed
-- 2026-08-17T08:37:10-05:00 170135bf9b5702b13f9e7c48ddf1286a47bcbe04 Apply the branch review: make npm test work, and stop the guard misfiring
-- 2026-08-17T08:37:10-05:00 5aaa50b7bb978f728e2aee432f59bef25baf63b0 Make the agentic fixture green before and after a correct fix
-- 2026-08-17T08:37:10-05:00 8d68fe21449246ca73da9b1c05f46b1fc2679f51 Bound the fixture caveat by reach, not by check
-- 2026-08-17T09:06:31-05:00 e0bb46e530cf665bfc77b1d06222a6f11227abb3 Give improve its own model list instead of run's
-- 2026-08-17T09:17:26-05:00 e1119c96b5eaed892e15ae81d016523e2d079249 Open COS-24 from a sweep of the CLI's argument surface
-- 2026-08-17T11:02:10-05:00 68d47d418080f1639e2744d070f8f1c2b5575c96 Correct the cost-to-token claim everywhere it lives, not just where it was found
-- 2026-08-17T11:02:10-05:00 a2c911b8ee8d7b45eca151ec3c20fc86384348f3 Repair the table the cost-column removal broke, and three more sweep defects
-- 2026-08-17T11:02:10-05:00 fa144055e32506f2f17f0a7460b0310af6a57875 Strip cost from the published record
-- 2026-08-17T11:32:23-05:00 163d0b06cb9692f86e79026852370034bb094fac Record the third pass on two_options_max, and what re-scoring moved
-- 2026-08-17T11:32:23-05:00 35f053aef9e35ca773b793a1746383d0cfa33414 Record the COS-9 finalization in the generated docs
-- 2026-08-17T13:13:47-05:00 0252a4e41ebcc56023f3f2d1e9a8543538369b03 Record the COS-20 finalization in the generated docs
-- 2026-08-17T13:13:47-05:00 4e2b45e40240d67b5592d545699ff37c0dff137b Record what 720 judge calls established about the judge
-- 2026-08-17T13:13:47-05:00 774a8972b58f4a461a13a2c9b7d1a9adea537b32 Say which style the sample sizes are for, in all four places that quote them
-- 2026-08-17T14:12:09-05:00 606ee237939ba434ce518d39c71840194640d083 Let codeOnRequest lift the whole cap, and see a gloss through bold
-- 2026-08-17T14:12:09-05:00 f8d77d896ea8065cd5768eca4da569886dfcc999 Correct the five published figures the gloss fix moves
-- 2026-08-18T07:09:33-05:00 9081f33f51157e7b083ca6b12bbe8cd653d92866 Correct beginner's judge figures at the sample size COS-4's claims needed
-- 2026-08-18T09:56:30-05:00 bb4a408d178e7c9f2006cc010badf8df8bca5e36 Qualify the reserve-agentic-session difficulty claim against the BUG marker
-- 2026-08-18T09:57:04-05:00 00bacbde0a325cd6a32d8c30fe3aab17458d2320 docs(COS-22): record the merged commit in the generated log
-- 2026-08-18T10:30:38-05:00 3f2513e4bad33e0dfd833b07dfbe7a13d5d86b37 Re-sync docs after COS-24's rebase-merge
-- 2026-08-19T22:42:19-05:00 0a53fae1f85ff6157df5dc12829e932d85af249a Fix the review's findings on COS-16's published record
-- 2026-08-19T22:42:19-05:00 3813595074903fddb2ce30ce09005df94dee2694 Ship beginner's three-edit rewrite, each edit measured on its own
-- 2026-08-26T08:38:07-05:00 a86ada6646665f963fd3c3ff281ad26e782bc24d Test intermediate and advanced for beginner's four defects
 - 2026-08-26T08:38:07-05:00 addff0b6651a9b9a95e38f8f3cd4f1dd2bf201fc Separate "clean" from "does not bite" in the COS-18 verdict table
-- 2026-08-26T08:38:07-05:00 af1caf26384c350138ac69b1a66223e8bcfd10ae Withdraw an over-length share that did not reproduce
-- 2026-08-27T08:19:06-05:00 c2f6f8b10502b4e65e83f13081b252dda6792eea Complete the four-tier beginner row on Haiku and Fable
-- 2026-08-27T08:19:06-05:00 f0c24759ae21f5cbc11e878968e6e79827dbe52e Fix three defects the branch review found
-- 2026-08-27T17:00:16-05:00 eb0da72846fb9f2bfe10cb656db3fe295f9fe350 Measure COS-21's first leg: beginner x Opus, five variants, 750 cells
-- 2026-08-27T21:46:38-05:00 77cc9eee91561b72b83fd50dd6f60adf33ec5658 Re-sync docs/log.md after COS-21's rebase-merge
-- 2026-08-28T09:24:00-05:00 64a62f904514c7bb91b909aa3228087c50fe11b5 Raise 10 of 12 four-tier judge cells to n=150, add single-sample intervals
-- 2026-08-28T09:24:00-05:00 bb826095416b6418e2a4861a94733f50d5bdda4b Fix pseudo-replication in singleSampleInterval, redo the clean-split re-check
-- 2026-08-28T15:05:44-05:00 d8281297e9e954edb7112d75c93ecabf679d43e6 Re-sync docs/log.md after COS-1's rebase-merge

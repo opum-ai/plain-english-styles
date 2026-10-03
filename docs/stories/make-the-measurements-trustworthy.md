@@ -5,7 +5,6 @@ tags:
   - measurement
   - evidence
 summary: Fix the scorer, then re-establish every published figure at a sample size its claims need
-status: todo
 tasks:
   - cos-10
   - cos-11
@@ -192,17 +191,17 @@ run spent on nothing.
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [COS-10](../../backlog/tasks/cos-10%20-%20Score-the-final-assistant-message-not-the-whole-turn.md) | Score the final assistant message, not the whole turn | Done |
-| [COS-11](../../backlog/tasks/cos-11%20-%20Stop-errored-cells-from-biasing-every-score-the-project-quotes.md) | Stop errored cells from biasing every score the project quotes | Done |
-| [COS-12](../../backlog/tasks/cos-12%20-%20Flush-run-rows-incrementally-so-a-killed-run-keeps-the-cells-it-paid-for.md) | Flush run rows incrementally so a killed run keeps the cells it paid for | Done |
-| [COS-13](../../backlog/tasks/cos-13%20-%20Fix-the-agentic-fixtures-contradictory-assertion.md) | Fix the agentic fixture's contradictory assertion | Done |
-| [COS-15](../../backlog/tasks/cos-15%20-%20Make-the-contract-audit-express-conditional-caps.md) | Make the contract audit express conditional caps | Done |
-| [COS-19](../../backlog/tasks/cos-19%20-%20Re-measure-the-four-tier-baseline-at-a-sample-size-its-claims-need.md) | Re-measure the four-tier baseline at a sample size its claims need | Done |
-| [COS-20](../../backlog/tasks/cos-20%20-%20Validate-the-judge-instrument-itself.md) | Validate the judge instrument itself | Done |
-| [COS-21](../../backlog/tasks/cos-21%20-%20Re-test-the-variant-sweep-the-reinforcement-ADR-rests-on.md) | Re-test the variant sweep the reinforcement ADR rests on | Done |
-| [COS-24](../../backlog/tasks/cos-24%20-%20Stop-the-CLI-silently-substituting-defaults-for-malformed-flags.md) | Stop the CLI silently substituting defaults for malformed flags | Done |
-| [COS-22](../../backlog/tasks/cos-22%20-%20Harden-the-fixture-guard-COS-13-added.md) | Harden the fixture guard COS-13 added | Done |
-| [COS-34](../../backlog/tasks/cos-34%20-%20Measure-advanced-x-Fable-and-intermediate-x-Fable-at-COS-19s-sample-size.md) | Measure advanced x Fable and intermediate x Fable at COS-19's sample size | To Do |
+| [COS-10](../../.quest/tasks/COS-10.json) | Score the final assistant message, not the whole turn | Done |
+| [COS-11](../../.quest/tasks/COS-11.json) | Stop errored cells from biasing every score the project quotes | Done |
+| [COS-12](../../.quest/tasks/COS-12.json) | Flush run rows incrementally so a killed run keeps the cells it paid for | Done |
+| [COS-13](../../.quest/tasks/COS-13.json) | Fix the agentic fixture's contradictory assertion | Done |
+| [COS-15](../../.quest/tasks/COS-15.json) | Make the contract audit express conditional caps | Done |
+| [COS-19](../../.quest/tasks/COS-19.json) | Re-measure the four-tier baseline at a sample size its claims need | Done |
+| [COS-20](../../.quest/tasks/COS-20.json) | Validate the judge instrument itself | Done |
+| [COS-21](../../.quest/tasks/COS-21.json) | Re-test the variant sweep the reinforcement ADR rests on | Done |
+| [COS-24](../../.quest/tasks/COS-24.json) | Stop the CLI silently substituting defaults for malformed flags | Done |
+| [COS-22](../../.quest/tasks/COS-22.json) | Harden the fixture guard COS-13 added | Done |
+| [COS-34](../../.quest/tasks/COS-34.json) | Measure advanced x Fable and intermediate x Fable at COS-19's sample size | To Do |
 <!-- lore:tasks:end -->
 
 ## Notes

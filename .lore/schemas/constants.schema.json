@@ -7,7 +7,7 @@
   "properties": {
     "type": {
       "type": "string",
-      "const": "Spec"
+      "const": "Constants"
     },
     "title": {
       "anyOf": [
@@ -72,6 +72,15 @@
         "stable",
         "deprecated"
       ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "last_reviewed": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
     },
     "supersedes": {
       "anyOf": [
@@ -435,7 +444,10 @@
     }
   },
   "required": [
-    "type"
+    "type",
+    "version",
+    "last_reviewed",
+    "owner"
   ],
   "additionalProperties": {}
 }

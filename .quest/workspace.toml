@@ -1,0 +1,7 @@
+schemaVersion = 1
+name = "plain-english-styles"
+taskIdPrefix = "PES"
+
+[tasks]
+types = ["feature", "bug", "chore", "docs", "enhancement", "spike"]
+priorities = ["low", "medium", "high", "critical"]

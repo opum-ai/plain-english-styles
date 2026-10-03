@@ -5,7 +5,6 @@ tags:
   - harness
   - models
 summary: Measure all three styles at both ends of the model range — Haiku and Fable — not just the two tiers in the middle
-status: done
 tasks:
   - cos-5
   - cos-7
@@ -179,9 +178,9 @@ corrected figures are in `FINDINGS.md`.
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [COS-5](../../backlog/tasks/cos-5%20-%20Measure-the-styles-on-Haiku.md) | Measure the styles on Haiku | Done |
-| [COS-7](../../backlog/tasks/cos-7%20-%20Measure-the-styles-on-Fable.md) | Measure the styles on Fable | Done |
-| [COS-17](../../backlog/tasks/cos-17%20-%20Re-measure-beginner-on-Haiku-and-Fable-after-the-rewrite.md) | Re-measure beginner on Haiku and Fable after the rewrite | Done |
+| [COS-5](../../.quest/tasks/COS-5.json) | Measure the styles on Haiku | Done |
+| [COS-7](../../.quest/tasks/COS-7.json) | Measure the styles on Fable | Done |
+| [COS-17](../../.quest/tasks/COS-17.json) | Re-measure beginner on Haiku and Fable after the rewrite | Done |
 <!-- lore:tasks:end -->
 
 ## Notes
