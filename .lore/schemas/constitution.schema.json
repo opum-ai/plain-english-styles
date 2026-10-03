@@ -7,7 +7,7 @@
   "properties": {
     "type": {
       "type": "string",
-      "const": "Spec"
+      "const": "Constitution"
     },
     "title": {
       "anyOf": [
@@ -72,6 +72,18 @@
         "stable",
         "deprecated"
       ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "ratified": {
+      "type": "string"
+    },
+    "last_amended": {
+      "type": "string"
+    },
+    "amendment_authority": {
+      "type": "string"
     },
     "supersedes": {
       "anyOf": [
@@ -435,7 +447,11 @@
     }
   },
   "required": [
-    "type"
+    "type",
+    "version",
+    "ratified",
+    "last_amended",
+    "amendment_authority"
   ],
   "additionalProperties": {}
 }

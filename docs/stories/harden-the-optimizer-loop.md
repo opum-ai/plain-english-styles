@@ -4,7 +4,6 @@ title: Harden the optimizer loop
 tags:
   - harness
 summary: A reserve split the optimizer never sees, and persisted transcripts so improve runs are auditable
-status: done
 tasks:
   - cos-2
   - cos-3
@@ -61,10 +60,10 @@ added late.
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [COS-2](../../backlog/tasks/cos-2%20-%20Hold-a-case-pool-out-of-every-optimizer-split.md) | Hold a case pool out of every optimizer split | Done |
-| [COS-3](../../backlog/tasks/cos-3%20-%20Persist-transcripts-from-improve-runs.md) | Persist transcripts from improve runs | Done |
-| [COS-14](../../backlog/tasks/cos-14%20-%20Give-matrix.improve-its-own-model-list.md) | Give matrix.improve its own model list | Done |
-| [COS-9](../../backlog/tasks/cos-9%20-%20Make-two_options_max-see-prose-option-sprawl.md) | Make two_options_max see prose option sprawl | Done |
+| [COS-2](../../.quest/tasks/COS-2.json) | Hold a case pool out of every optimizer split | Done |
+| [COS-3](../../.quest/tasks/COS-3.json) | Persist transcripts from improve runs | Done |
+| [COS-14](../../.quest/tasks/COS-14.json) | Give matrix.improve its own model list | Done |
+| [COS-9](../../.quest/tasks/COS-9.json) | Make two_options_max see prose option sprawl | Done |
 <!-- lore:tasks:end -->
 
 ## Outcome

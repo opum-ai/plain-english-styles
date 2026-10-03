@@ -1,5 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "x-lore-generator": {
+    "profileDigest": "sha256:2f3626612839ce97ed9ee4635db4dbbd35de6d5c97bdc26bf48c74470fec8b94"
+  },
   "type": "object",
   "properties": {
     "type": {
@@ -102,6 +105,117 @@
               "items": {
                 "type": "string"
               }
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "relations": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "target": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "statement": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "version": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "\\S"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "target"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "claim_outcome": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "claim_evidence_level": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "claim_version": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            {
+              "type": "number"
             }
           ]
         },

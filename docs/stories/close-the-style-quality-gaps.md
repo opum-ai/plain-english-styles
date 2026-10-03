@@ -4,7 +4,6 @@ title: Close the style quality gaps
 tags:
   - styles
 summary: Add guidance and cases for the two scenarios every style handles badly, and lift beginner prose quality
-status: todo
 tasks:
   - cos-1
   - cos-4
@@ -204,11 +203,11 @@ untested tiers are Haiku and Fable.
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [COS-1](../../backlog/tasks/cos-1%20-%20Close-the-multi-tool-session-and-open-ended-decision-quality-gap.md) | Close the multi-tool session and open-ended decision quality gap | To Do |
-| [COS-4](../../backlog/tasks/cos-4%20-%20Raise-beginner-style-prose-quality.md) | Raise beginner style prose quality | To Do |
-| [COS-8](../../backlog/tasks/cos-8%20-%20Decide-whether-lower-levels-need-tighter-sentence-caps.md) | Decide whether lower levels need tighter sentence caps | Done |
-| [COS-16](../../backlog/tasks/cos-16%20-%20Fix-the-five-contradictions-COS-4-left-in-the-beginner-style-file.md) | Fix the five contradictions COS-4 left in the beginner style file | Done |
-| [COS-18](../../backlog/tasks/cos-18%20-%20Test-whether-intermediate-and-advanced-carry-beginners-defects.md) | Test whether intermediate and advanced carry beginner's defects | Done |
+| [COS-1](../../.quest/tasks/COS-1.json) | Close the multi-tool session and open-ended decision quality gap | To Do |
+| [COS-4](../../.quest/tasks/COS-4.json) | Raise beginner style prose quality | To Do |
+| [COS-8](../../.quest/tasks/COS-8.json) | Decide whether lower levels need tighter sentence caps | Done |
+| [COS-16](../../.quest/tasks/COS-16.json) | Fix the five contradictions COS-4 left in the beginner style file | Done |
+| [COS-18](../../.quest/tasks/COS-18.json) | Test whether intermediate and advanced carry beginner's defects | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

@@ -30,4 +30,4 @@
 # status_flow    = ["To Do", "In Progress", "Done"]
 
 [tracker]
-backend = "backlog"
+backend = "quest"
