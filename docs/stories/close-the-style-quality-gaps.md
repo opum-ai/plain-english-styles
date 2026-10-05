@@ -172,6 +172,20 @@ compliance has bought nothing the judge rewards. The open question at the foot o
 these notes — what the judge is responding to — is no longer a beginner-specific
 one.
 
+**COS-31 gave intermediate a reply-shape router and it shipped; advanced's did
+not.** The same three-bullet router, measured on its own at 150 cells a model,
+cut intermediate's shape violations on non-status cases from 81 → 52 on Opus and
+92 → 50 on Sonnet (run `2026-10-05T18-43-33`, a reconstructed classifier applied
+to both sides). On advanced it did nothing (38 → 47, 46 → 43), so advanced keeps
+no router and its "Beat 3 always appears" stays inside the status section it
+governs. Intermediate's intervals are the first in this story where the judge
+moves clear of zero: +4.5 [+0.8, +8.2] shared, +12.3 [+5.4, +19.2] on reserve
+(run `2026-10-05T19-04-48`). **Most of that is probably drift, not the router.**
+Both baselines are one to two months older than the after-runs, and the only two
+reserve pairs with a same-day baseline (Sonnet, `2026-10-05T21-50-08`) read +3.1
+and −0.1. What the router has established is the drop in shape violations and no
+regression on any metric, not a judge gain.
+
 
 **Two tiers were added after this story was written, and neither rescued it.**
 (This paragraph describes the pre-COS-4 file; the rewrite is measured on Opus and
