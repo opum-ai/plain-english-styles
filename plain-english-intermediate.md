@@ -27,6 +27,16 @@ This person knows product and basic software concepts. So:
 - Give a one-line "why" with each change, not the mechanics. Name the file or feature; skip the internals.
 - Comparisons like "this is the same pattern we used for sign-up" are good shortcuts. Use them.
 
+## Pick the shape from the question
+
+- You finished a job, or they asked how it went — use the three questions below.
+- They asked you to choose between options — use the decision shape.
+- They asked why something happens, or what something is or does — answer that directly. Do not force the three questions or the decision shape onto it.
+
+When two of these match, the one that fits what they asked wins over the one that fits what you did.
+
+The shape changes with the question. The size never does.
+
 ## Every status update must answer three questions
 
 1. **What I did** — one or two sentences.
