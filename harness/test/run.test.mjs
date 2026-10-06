@@ -24,7 +24,7 @@ import { runCell, cellLimitMs } from '../src/run.mjs'
 // concluding it looks right.
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const STYLE = readFileSync(join(ROOT, '..', 'plain-english-advanced.md'), 'utf8')
+const STYLE = readFileSync(join(ROOT, '..', 'output-styles', 'plain-english-advanced.md'), 'utf8')
 
 const CELL = {
   styleId: 'demo',

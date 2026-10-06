@@ -1,7 +1,7 @@
 {
   "plain-english-beginner": {
     "level": "beginner",
-    "styleFile": "../plain-english-beginner.md",
+    "styleFile": "../output-styles/plain-english-beginner.md",
     "maxSentenceWords": 20,
     "maxParagraphSentences": 4,
     "maxUpdateWords": 80,
@@ -59,7 +59,7 @@
   },
   "plain-english-intermediate": {
     "level": "intermediate",
-    "styleFile": "../plain-english-intermediate.md",
+    "styleFile": "../output-styles/plain-english-intermediate.md",
     "maxSentenceWords": 20,
     "maxParagraphSentences": 4,
     "maxUpdateWords": 100,
@@ -98,7 +98,7 @@
   },
   "plain-english-advanced": {
     "level": "advanced",
-    "styleFile": "../plain-english-advanced.md",
+    "styleFile": "../output-styles/plain-english-advanced.md",
     "maxSentenceWords": 20,
     "maxParagraphSentences": 4,
     "maxUpdateWords": 120,

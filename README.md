@@ -14,19 +14,19 @@ Pick the level that matches your technical depth. The workflow is identical acro
 
 ## The three levels
 
-### Plain English — Beginner (`plain-english-beginner.md`)
+### Plain English — Beginner (`output-styles/plain-english-beginner.md`)
 
 For a smart person with **no coding background**. Zero jargon, zero acronyms, no code ever shown unless asked. Uses everyday analogies (a database is a filing cabinet; a server is a helper computer). Explains what a thing *is* before what happened to it. Translates outcomes, never mechanics — no file names, commands, or error text. Updates stay under ~80 words.
 
 > "I fixed the sign-in check. It was rejecting valid users. Yes — sign-in works again. I tested it. Nothing for you to do."
 
-### Plain English — Intermediate (`plain-english-intermediate.md`)
+### Plain English — Intermediate (`output-styles/plain-english-intermediate.md`)
 
 For someone who **works near code but doesn't live in it** (product owner, technical PM). Common terms are fine without explanation: database, API, deploy, branch, test. Deeper terms get a short gloss on first use: "migration (a scripted change to the database's structure)." Code appears only when a snippet under 5 lines says it faster than prose. Each change gets a one-line "why." Updates stay under ~100 words.
 
 > "I fixed the login check in the backend. It used an outdated token rule (a token is the pass a user carries after sign-in). All 14 login tests pass."
 
-### Plain English — Advanced (`plain-english-advanced.md`)
+### Plain English — Advanced (`output-styles/plain-english-advanced.md`)
 
 For a **technically fluent leader** who can read code and reason about architecture. Precise terms are correct here — "race condition" beats "timing problem" — but buzzwords and filler are banned. Names the real mechanism: file, function, query, root cause. Includes numbers when they change the decision (latency, cost, test counts). States risk and blast radius for changes touching data, auth, or money. Short diffs welcome. Updates stay under ~120 words.
 
@@ -44,36 +44,54 @@ For a **technically fluent leader** who can read code and reason about architect
 
 ## Install
 
-1. Copy the three `.md` files to `~/.claude/output-styles/` (all projects) or `.claude/output-styles/` inside a project.
-2. In Claude Code, run `/config`, select **Output style**, and pick a level. (The old `/output-style` command was removed in v2.1.91.) Claude Code writes the choice to that project's `.claude/settings.local.json` — **it does not apply to your other projects**, even if you copied the files to `~/.claude/output-styles/` in step 1. For a user-wide default, set `outputStyle` yourself in `~/.claude/settings.json` instead (see below).
-3. Start a new session. The style is part of the system prompt, which is read once at session start — so it takes effect after `/clear` or in your next session, not mid-conversation.
-4. Confirm it loaded — see below. Do not skip this.
+### As a plugin (recommended)
 
-Switch levels any time — for example, Beginner for a quick status check, Advanced when reviewing an architecture change. Repeat steps 2 and 3.
+```
+/plugin marketplace add opum-ai/opum-marketplace
+/plugin install plain-english-styles@opum
+```
+
+The plugin ships the three files in `output-styles/`, and Claude Code picks them up from there. Nothing to copy.
+
+### By hand
+
+Copy the three files in `output-styles/` to `~/.claude/output-styles/` (all projects) or `.claude/output-styles/` inside a project.
+
+### Then, either way
+
+1. In Claude Code, run `/config`, select **Output style**, and pick a level. (The old `/output-style` command was removed in v2.1.91.) Claude Code writes the choice to that project's `.claude/settings.local.json`. **It does not apply to your other projects**, even with a user-wide install. For a user-wide default, set `outputStyle` yourself in `~/.claude/settings.json` instead (see below).
+2. Start a new session. The style is part of the system prompt, which is read once at session start. So it takes effect after `/clear` or in your next session, not mid-conversation.
+3. Confirm it loaded (see below). Do not skip this.
+
+Switch levels any time. For example, use Beginner for a quick status check and Advanced when reviewing an architecture change. Repeat steps 1 and 2.
 
 ### How the style name resolves
 
-A style's name comes from its **frontmatter `name:`**, and falls back to the filename only when the file has no YAML frontmatter at all. These three files all carry frontmatter, so their names are:
+A style's name comes from its **frontmatter `name:`**, and falls back to the filename only when the file has no YAML frontmatter at all. **A plugin install also prefixes the plugin name.** So the value to use depends on how you installed:
 
-- `Plain English - Beginner`
-- `Plain English - Intermediate`
-- `Plain English - Advanced`
+| Level | Plugin install | Hand-copied install |
+|---|---|---|
+| Beginner | `plain-english-styles:Plain English - Beginner` | `Plain English - Beginner` |
+| Intermediate | `plain-english-styles:Plain English - Intermediate` | `Plain English - Intermediate` |
+| Advanced | `plain-english-styles:Plain English - Advanced` | `Plain English - Advanced` |
 
-Copy those from the list above, not from the section headings earlier in this README: the real names use a plain ASCII hyphen (`-`), while the headings are typeset with an em dash (`—`). They look almost identical and no file provides the em-dash version.
+The two columns are not interchangeable. With only the plugin installed, the bare `Plain English - Advanced` resolves to nothing. If you move from a hand-copied install to the plugin, update your `outputStyle` value to the plugin form before you delete the copied files.
 
-Those are the values to use if you set the style by hand rather than through `/config` — in `~/.claude/settings.json` for a user-wide default, or a project's `.claude/settings.json` / `.claude/settings.local.json` for one repo:
+Copy names from the table, not from the section headings earlier in this README. The real names use a plain ASCII hyphen (`-`), while the headings are typeset with an em dash (`—`). They look almost identical, and no file provides the em-dash version.
+
+Use these values if you set the style by hand rather than through `/config`. Put it in `~/.claude/settings.json` for a user-wide default, or in a project's `.claude/settings.json` / `.claude/settings.local.json` for one repo:
 
 ```json
-{ "outputStyle": "Plain English - Advanced" }
+{ "outputStyle": "plain-english-styles:Plain English - Advanced" }
 ```
 
-**A name that no file provides fails silently.** Claude Code prints no error and no warning — it runs Default and says nothing. On the machine these styles were written on, a global `outputStyle` naming a style no file provided ran Default across every project but one, for months, unnoticed. That is the whole reason step 4 exists.
+**A name that no file provides fails silently.** Claude Code prints no error and no warning. It runs Default and says nothing. On the machine these styles were written on, a global `outputStyle` naming a style no file provided ran Default across every project but one, for months, unnoticed. That is the whole reason the confirm step exists.
 
 ### Confirm it loaded
 
 Configured is not the same as loaded, and the silent fallback means settings alone cannot tell you which one you have.
 
-Ask for something the style visibly shapes — a status update — and check the reply against the contract: outcome first, the three beats, inside the level's word cap. If it reads like stock Claude Code, one of two things is wrong. Either the name did not resolve — re-check the frontmatter `name:` against your `outputStyle` value character for character, watching for the em dash — or the setting is scoped to a different project than the one you are in.
+Ask for something the style visibly shapes — a status update — and check the reply against the contract: outcome first, the three beats, inside the level's word cap. If it reads like stock Claude Code, one of two things is wrong. Either the name did not resolve — re-check your `outputStyle` value against the table above character for character, watching for the em dash and the plugin prefix — or the setting is scoped to a different project than the one you are in.
 
 For a decisive check, use a canary: add a line to the style body telling Claude to open every reply with a distinctive token, start a session, and see whether it obeys. Remove it afterwards. Asking the model to describe its own system prompt is unreliable.
 

@@ -27,18 +27,28 @@ project but one.
 - Claude Code 2.1.91 or later. The standalone `/output-style` command was removed
   in 2.1.91; selection now happens through `/config` or the `outputStyle`
   setting.
-- Write access to `~/.claude/output-styles/` for a user-wide install, or
-  `.claude/output-styles/` inside a project for one repo.
+- For a hand-copied install only: write access to `~/.claude/output-styles/`
+  for a user-wide install, or `.claude/output-styles/` inside a project for one
+  repo.
 
 ## Steps
 
-### 1. Copy the style files
+### 1. Install the style files
 
-```bash
-cp plain-english-*.md ~/.claude/output-styles/
+As a plugin, which ships the files in `output-styles/` and needs no copying:
+
+```
+/plugin marketplace add opum-ai/opum-marketplace
+/plugin install plain-english-styles@opum
 ```
 
-Project-scoped instead: copy to `.claude/output-styles/` in the repo. Project
+Or by hand, from a checkout of this repository:
+
+```bash
+cp output-styles/plain-english-*.md ~/.claude/output-styles/
+```
+
+Project-scoped instead of user-wide: copy to `.claude/output-styles/` in the repo. Project
 styles load from every `.claude/output-styles/` between the working directory and
 the repository root; when two define the same name, the one closest to the
 working directory wins.
@@ -59,6 +69,12 @@ filename is only the fallback when a file has no frontmatter at all. The three
 names are `Plain English - Beginner`, `Plain English - Intermediate`, and
 `Plain English - Advanced`.
 
+**A plugin install prefixes the plugin name**: the values become
+`plain-english-styles:Plain English - Beginner` and so on. The two forms are not
+interchangeable. With only the plugin installed, the bare name resolves to
+nothing and falls back to Default silently (measured 2026-10-06, PES-2, with a
+canary under `--plugin-dir`).
+
 ### 3. Start a new session
 
 Output style is part of the system prompt, which Claude Code reads once at
@@ -77,7 +93,8 @@ reply obeys. Remove it afterwards. Asking the model to describe its own system
 prompt is unreliable.
 
 If the reply looks like stock Claude Code, the name did not resolve. Re-check the
-frontmatter `name:` against the `outputStyle` value, character for character.
+frontmatter `name:` against the `outputStyle` value, character for character,
+including the `plain-english-styles:` prefix for a plugin install.
 
 ### 5. Switching levels
 
@@ -89,7 +106,9 @@ one file serves every model.
 
 Set `outputStyle` to `"Default"`, or remove the key, and start a new session.
 
-To remove the styles entirely, delete the files from `~/.claude/output-styles/`.
+To remove the styles entirely, run `/plugin uninstall plain-english-styles@opum`
+for a plugin install, or delete the files from `~/.claude/output-styles/` for a
+hand-copied one.
 Nothing else on the system is touched; a missing style file falls back to Default
 rather than erroring.
 
