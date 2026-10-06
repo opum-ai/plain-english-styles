@@ -13,7 +13,7 @@ tasks:
 generated:
   by: lore/0.2.0
   at: 2026-08-16T12:50:00.000Z
-lore_task_status: todo
+lore_task_status: in-progress
 ---
 
 # Close the style quality gaps
@@ -217,8 +217,8 @@ untested tiers are Haiku and Fable.
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [COS-1](../../.quest/tasks/COS-1.json) | Close the multi-tool session and open-ended decision quality gap | To Do |
-| [COS-4](../../.quest/tasks/COS-4.json) | Raise beginner style prose quality | To Do |
+| [COS-1](../../.quest/tasks/COS-1.json) | Close the multi-tool session and open-ended decision quality gap | Paused |
+| [COS-4](../../.quest/tasks/COS-4.json) | Raise beginner style prose quality | Paused |
 | [COS-8](../../.quest/tasks/COS-8.json) | Decide whether lower levels need tighter sentence caps | Done |
 | [COS-16](../../.quest/tasks/COS-16.json) | Fix the five contradictions COS-4 left in the beginner style file | Done |
 | [COS-18](../../.quest/tasks/COS-18.json) | Test whether intermediate and advanced carry beginner's defects | Done |
