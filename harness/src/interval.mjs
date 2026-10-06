@@ -39,13 +39,20 @@ const mean = xs => xs.reduce((s, x) => s + x, 0) / xs.length
  * case+model only — pooling two styles' rows into one pair silently
  * averages them together instead of raising an error. Reject it up front
  * rather than let it produce an interval that looks ordinary.
+ * singleSampleInterval groups by case alone and has the same hole (COS-35).
+ *
+ * Returns the one style the rows hold, so pairedInterval can also check
+ * that both sides hold the same one.
  */
-function assertSingleStyle (rows, side) {
+function assertSingleStyle (rows, fnName, label, purpose) {
   const styles = new Set(rows.map(r => r.styleId))
   if (styles.size > 1) {
-    throw new Error(`pairedInterval: ${side}Rows span multiple styles (${[...styles].sort().join(', ')}) — filter to a single style before comparing`)
+    throw new Error(`${fnName}: ${label} span multiple styles (${[...styles].sort().join(', ')}) — filter to a single style before ${purpose}`)
   }
+  return [...styles][0]
 }
+
+const styleName = s => s ?? '(no styleId)'
 
 /**
  * A cell that errored still lands in rows.json with every score filled in:
@@ -103,8 +110,14 @@ function studentTInterval (values, fnName, unit) {
  */
 export function pairedInterval (beforeRows, afterRows, { getValue, keyOf = defaultKey } = {}) {
   if (typeof getValue !== 'function') throw new Error('pairedInterval: getValue is required')
-  assertSingleStyle(beforeRows, 'before')
-  assertSingleStyle(afterRows, 'after')
+  const beforeStyle = assertSingleStyle(beforeRows, 'pairedInterval', 'beforeRows', 'comparing')
+  const afterStyle = assertSingleStyle(afterRows, 'pairedInterval', 'afterRows', 'comparing')
+  // Each side can be single-style and still be the wrong style: the pairing
+  // key has no style term, so an intermediate run against an advanced one
+  // would diff two unrelated files and print a normal-looking interval (COS-35).
+  if (beforeStyle !== afterStyle) {
+    throw new Error(`pairedInterval: beforeRows are ${styleName(beforeStyle)} but afterRows are ${styleName(afterStyle)} — filter both sides to the same style before comparing`)
+  }
   const before = dropErrored(beforeRows)
   const after = dropErrored(afterRows)
   const beforeGroups = groupByKey(before.kept, keyOf, getValue)
@@ -136,6 +149,7 @@ export function pairedInterval (beforeRows, afterRows, { getValue, keyOf = defau
  */
 export function singleSampleInterval (rows, { getValue, keyOf = r => r.caseId } = {}) {
   if (typeof getValue !== 'function') throw new Error('singleSampleInterval: getValue is required')
+  assertSingleStyle(rows, 'singleSampleInterval', 'rows', 'taking an interval')
   const { kept, dropped } = dropErrored(rows)
   const groups = groupByKey(kept, keyOf, getValue)
   const means = [...groups.values()].map(mean)
