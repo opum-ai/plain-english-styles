@@ -243,3 +243,59 @@ test('singleSampleInterval throws with fewer than two groups', () => {
 test('singleSampleInterval requires getValue', () => {
   assert.throws(() => singleSampleInterval([{ caseId: 'c1', v: 1 }, { caseId: 'c2', v: 2 }]), /getValue is required/)
 })
+
+// ---------- errored rows are dropped before grouping (PES-1) ----------
+// A cell that errored still carries every score: in run 2026-09-05T13-02-20
+// a reply that was only Claude Code's spend-limit message scored judge 1.0.
+// Averaging it in moved COS-31's reserve judge figure from +12.3 to +10.1
+// and flipped its words delta from -3.7 to +6.3.
+
+const SPEND_LIMIT = "Claude Code returned an error result: You've hit your monthly spend limit"
+
+test('pairedInterval drops an errored row that would otherwise shift the mean', () => {
+  // Before is 50 on both pairs; after is 60. One errored before-row scored
+  // 100 sits on c1: averaged in, c1's before mean reads 75 and the paired
+  // mean falls from 10 to -2.5.
+  const before = [
+    { caseId: 'c1', model: 'opus', v: 50 },
+    { caseId: 'c1', model: 'opus', v: 100, error: SPEND_LIMIT },
+    { caseId: 'c2', model: 'opus', v: 50 }
+  ]
+  const after = [{ caseId: 'c1', model: 'opus', v: 60 }, { caseId: 'c2', model: 'opus', v: 60 }]
+  const r = pairedInterval(before, after, { getValue: row => row.v })
+  assert.ok(Math.abs(r.mean - 10) < 1e-9)
+  assert.deepEqual(r.dropped, { before: 1, after: 0 })
+})
+
+test('pairedInterval counts errored rows dropped from each side separately', () => {
+  const row = (caseId, v, error) => ({ caseId, model: 'opus', v, ...(error ? { error } : {}) })
+  const before = [row('c1', 1), row('c2', 1), row('c2', 9, SPEND_LIMIT)]
+  const after = [row('c1', 2), row('c2', 2), row('c1', 9, 'Reached maximum number of turns (12)'), row('c2', 9, SPEND_LIMIT)]
+  const r = pairedInterval(before, after, { getValue: x => x.v })
+  assert.deepEqual(r.dropped, { before: 1, after: 2 })
+  assert.ok(Math.abs(r.mean - 1) < 1e-9)
+})
+
+test('pairedInterval reports a key whose only rows errored as missing, not as a pair', () => {
+  const before = [{ caseId: 'c1', model: 'opus', v: 1 }, { caseId: 'c2', model: 'opus', v: 1 }]
+  const after = [{ caseId: 'c1', model: 'opus', v: 2 }, { caseId: 'c2', model: 'opus', v: 100, error: SPEND_LIMIT }]
+  assert.throws(() => pairedInterval(before, after, { getValue: r => r.v }), /no after-side rows for: c2\|opus/)
+})
+
+test('singleSampleInterval drops errored rows and reports how many', () => {
+  // c1 reads 4 with its errored row dropped, 52 with it averaged in.
+  const rows = [
+    { caseId: 'c1', v: 4 },
+    { caseId: 'c1', v: 100, error: SPEND_LIMIT },
+    { caseId: 'c2', v: 8 }
+  ]
+  const r = singleSampleInterval(rows, { getValue: row => row.v })
+  assert.ok(Math.abs(r.mean - 6) < 1e-9)
+  assert.equal(r.dropped, 1)
+})
+
+test('both intervals report zero dropped when no row errored', () => {
+  const rows = [{ caseId: 'c1', model: 'opus', v: 1 }, { caseId: 'c2', model: 'opus', v: 2 }]
+  assert.deepEqual(pairedInterval(rows, rows, { getValue: r => r.v }).dropped, { before: 0, after: 0 })
+  assert.equal(singleSampleInterval(rows, { getValue: r => r.v }).dropped, 0)
+})

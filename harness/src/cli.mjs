@@ -409,12 +409,14 @@ if (cmd === 'run') {
     if (args.before || args.after) throw new Error('interval takes --rows on its own, not alongside --before/--after')
     const rows = loadRows(args.rows)
     const r = singleSampleInterval(rows, { getValue })
+    console.error(`dropped errored rows: ${r.dropped}`)
     console.log(`${metric}: ${r.mean.toFixed(1)} [${r.lo.toFixed(1)}, ${r.hi.toFixed(1)}], sd=${r.sd.toFixed(1)}, df=${r.df}, n=${r.n}`)
   } else {
     if (!args.before || !args.after) throw new Error('interval needs --before=results/<stamp>/rows.json and --after=..., or --rows=results/<stamp>/rows.json alone')
     const beforeRows = loadRows(args.before)
     const afterRows = loadRows(args.after)
     const r = pairedInterval(beforeRows, afterRows, { getValue })
+    console.error(`dropped errored rows: before ${r.dropped.before}, after ${r.dropped.after}`)
     const sign = r.mean >= 0 ? '+' : ''
     console.log(`${metric}: ${sign}${r.mean.toFixed(1)} [${r.lo >= 0 ? '+' : ''}${r.lo.toFixed(1)}, ${r.hi >= 0 ? '+' : ''}${r.hi.toFixed(1)}], t=${r.t.toFixed(2)}, df=${r.df}, n=${r.n} pairs`)
   }

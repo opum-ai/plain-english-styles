@@ -36,7 +36,8 @@ output-style harness
            gives a single-sample 95% interval over one run's per-case means instead of
            a before/after comparison — n is the case count, not the row count, so more
            repeats per case narrows this only a little; it narrows a paired comparison
-           a lot. Runs no cell — reads saved rows only
+           a lot. Rows whose cell errored are dropped first — they still carry scores —
+           and the count is printed to stderr. Runs no cell — reads saved rows only
 
   --help   print this and exit, on any subcommand
 `
