@@ -20,7 +20,7 @@ tasks:
 generated:
   by: lore/0.3.0
   at: 2026-08-17T03:50:43.715Z
-lore_task_status: todo
+lore_task_status: done
 ---
 
 # Make the measurements trustworthy
@@ -201,7 +201,7 @@ run spent on nothing.
 | [COS-21](../../.quest/tasks/COS-21.json) | Re-test the variant sweep the reinforcement ADR rests on | Done |
 | [COS-24](../../.quest/tasks/COS-24.json) | Stop the CLI silently substituting defaults for malformed flags | Done |
 | [COS-22](../../.quest/tasks/COS-22.json) | Harden the fixture guard COS-13 added | Done |
-| [COS-34](../../.quest/tasks/COS-34.json) | Measure advanced x Fable and intermediate x Fable at COS-19's sample size | To Do |
+| [COS-34](../../.quest/completed/COS-34.json) | Measure advanced x Fable and intermediate x Fable at COS-19's sample size | Closed |
 <!-- lore:tasks:end -->
 
 ## Notes

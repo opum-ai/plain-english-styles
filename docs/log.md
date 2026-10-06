@@ -116,6 +116,7 @@
 - 2026-10-05T20:30:06-05:00 776f6fbd0220e3cb47c03b2032def4adb94896a6 Re-sync docs/log.md after COS-31's rebase-merge
 - 2026-10-06T12:59:41-05:00 6ae1620d0354425fcec78bac47df98b8c7a1c94f Re-sync docs/log.md after PES-1's rebase-merge
 - 2026-10-06T13:12:02-05:00 6a4985ac819ae47a476c9ad0832cee408ce77be4 Re-sync docs/log.md after COS-35's rebase-merge
+- 2026-10-06T14:32:18-05:00 151287097457fb2538dc756589bb625630d2fb26 Triage the open tasks before shipping: pause COS-1 and COS-4, defer the rest
 
 ## docs/reference
 
