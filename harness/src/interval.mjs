@@ -47,6 +47,19 @@ function assertSingleStyle (rows, side) {
   }
 }
 
+/**
+ * A cell that errored still lands in rows.json with every score filled in:
+ * the checks and the judge grade whatever text came back, so a reply that is
+ * only Claude Code's spend-limit message can score judge 1.0 (run
+ * 2026-09-05T13-02-20, PES-1). Averaging those rows in shifts a figure
+ * without any sign it happened. Drop them before grouping, and report how
+ * many went so a caller can say so.
+ */
+function dropErrored (rows) {
+  const kept = rows.filter(r => !r.error)
+  return { kept, dropped: rows.length - kept.length }
+}
+
 function groupByKey (rows, keyOf, getValue) {
   const m = new Map()
   for (const r of rows) {
@@ -92,8 +105,10 @@ export function pairedInterval (beforeRows, afterRows, { getValue, keyOf = defau
   if (typeof getValue !== 'function') throw new Error('pairedInterval: getValue is required')
   assertSingleStyle(beforeRows, 'before')
   assertSingleStyle(afterRows, 'after')
-  const beforeGroups = groupByKey(beforeRows, keyOf, getValue)
-  const afterGroups = groupByKey(afterRows, keyOf, getValue)
+  const before = dropErrored(beforeRows)
+  const after = dropErrored(afterRows)
+  const beforeGroups = groupByKey(before.kept, keyOf, getValue)
+  const afterGroups = groupByKey(after.kept, keyOf, getValue)
   const missing = [...beforeGroups.keys()].filter(k => !afterGroups.has(k))
   if (missing.length) throw new Error(`pairedInterval: no after-side rows for: ${missing.join(', ')}`)
   const extra = [...afterGroups.keys()].filter(k => !beforeGroups.has(k))
@@ -102,7 +117,7 @@ export function pairedInterval (beforeRows, afterRows, { getValue, keyOf = defau
   const diffs = [...beforeGroups.keys()].map(k => mean(afterGroups.get(k)) - mean(beforeGroups.get(k)))
   const r = studentTInterval(diffs, 'pairedInterval', 'pairs')
   const t = r.se === 0 ? Infinity : r.mean / r.se
-  return { ...r, t }
+  return { ...r, t, dropped: { before: before.dropped, after: after.dropped } }
 }
 
 /**
@@ -121,9 +136,10 @@ export function pairedInterval (beforeRows, afterRows, { getValue, keyOf = defau
  */
 export function singleSampleInterval (rows, { getValue, keyOf = r => r.caseId } = {}) {
   if (typeof getValue !== 'function') throw new Error('singleSampleInterval: getValue is required')
-  const groups = groupByKey(rows, keyOf, getValue)
+  const { kept, dropped } = dropErrored(rows)
+  const groups = groupByKey(kept, keyOf, getValue)
   const means = [...groups.values()].map(mean)
-  return studentTInterval(means, 'singleSampleInterval', 'groups')
+  return { ...studentTInterval(means, 'singleSampleInterval', 'groups'), dropped }
 }
 
 /** The four metrics FINDINGS.md publishes as paired percentage-point/word deltas. */
