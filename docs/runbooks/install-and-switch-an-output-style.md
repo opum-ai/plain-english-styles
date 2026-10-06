@@ -35,13 +35,11 @@ project but one.
 
 ### 1. Install the style files
 
-As a plugin. The styles ship in Opum's `opum-output-styles` plugin from 0.2.0,
-which carries released copies of this repository's `output-styles/` and needs no
-copying:
+As a plugin, which ships the files in `output-styles/` and needs no copying:
 
 ```
 /plugin marketplace add opum-ai/opum-marketplace
-/plugin install opum-output-styles@opum
+/plugin install plain-english-styles@opum
 ```
 
 Or by hand, from a checkout of this repository:
@@ -72,11 +70,10 @@ names are `Plain English - Beginner`, `Plain English - Intermediate`, and
 `Plain English - Advanced`.
 
 **A plugin install prefixes the plugin name**: the values become
-`opum-output-styles:Plain English - Beginner` and so on. The two forms are not
+`plain-english-styles:Plain English - Beginner` and so on. The two forms are not
 interchangeable. With only the plugin installed, the bare name resolves to
 nothing and falls back to Default silently (measured 2026-10-06, PES-2, with a
-canary under `--plugin-dir`; the prefix is the
-plugin's name, so it follows the plugin that ships the files).
+canary under `--plugin-dir`).
 
 ### 3. Start a new session
 
@@ -97,7 +94,7 @@ prompt is unreliable.
 
 If the reply looks like stock Claude Code, the name did not resolve. Re-check the
 frontmatter `name:` against the `outputStyle` value, character for character,
-including the `opum-output-styles:` prefix for a plugin install.
+including the `plain-english-styles:` prefix for a plugin install.
 
 ### 5. Switching levels
 
@@ -109,9 +106,9 @@ one file serves every model.
 
 Set `outputStyle` to `"Default"`, or remove the key, and start a new session.
 
-To remove the styles entirely, run `/plugin uninstall opum-output-styles@opum`
-for a plugin install (which also removes that plugin's other styles), or delete
-the files from `~/.claude/output-styles/` for a hand-copied one.
+To remove the styles entirely, run `/plugin uninstall plain-english-styles@opum`
+for a plugin install, or delete the files from `~/.claude/output-styles/` for a
+hand-copied one.
 Nothing else on the system is touched; a missing style file falls back to Default
 rather than erroring.
 
