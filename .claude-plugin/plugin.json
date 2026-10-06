@@ -1,0 +1,13 @@
+{
+  "name": "plain-english-styles",
+  "version": "0.1.0",
+  "description": "Three Claude Code output styles, Beginner, Intermediate and Advanced, that report in clear, jargon-free language built on ASD-STE100 Simplified Technical English. Every update answers what was done, whether it worked and what you do next; decisions come as two options with a recommendation. Only the communication changes, not the engineering.",
+  "author": {
+    "name": "Opum AI",
+    "url": "https://github.com/opum-ai"
+  },
+  "homepage": "https://github.com/opum-ai/plain-english-styles",
+  "repository": "https://github.com/opum-ai/plain-english-styles",
+  "license": "MIT",
+  "keywords": ["output-style", "plain-english", "simplified-technical-english", "communication"]
+}
