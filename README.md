@@ -48,10 +48,12 @@ For a **technically fluent leader** who can read code and reason about architect
 
 ```
 /plugin marketplace add opum-ai/opum-marketplace
-/plugin install plain-english-styles@opum
+/plugin install opum-output-styles@opum
 ```
 
-The plugin ships the three files in `output-styles/`, and Claude Code picks them up from there. Nothing to copy.
+The three styles ship in Opum's [`opum-output-styles`](https://github.com/opum-ai/opum-output-styles) plugin (0.2.0 and later), alongside its other styles. Nothing to copy.
+
+This repository is where the style text is written and measured. The plugin carries released copies of `output-styles/`, so edit the styles here, not there.
 
 ### By hand
 
@@ -71,9 +73,9 @@ A style's name comes from its **frontmatter `name:`**, and falls back to the fil
 
 | Level | Plugin install | Hand-copied install |
 |---|---|---|
-| Beginner | `plain-english-styles:Plain English - Beginner` | `Plain English - Beginner` |
-| Intermediate | `plain-english-styles:Plain English - Intermediate` | `Plain English - Intermediate` |
-| Advanced | `plain-english-styles:Plain English - Advanced` | `Plain English - Advanced` |
+| Beginner | `opum-output-styles:Plain English - Beginner` | `Plain English - Beginner` |
+| Intermediate | `opum-output-styles:Plain English - Intermediate` | `Plain English - Intermediate` |
+| Advanced | `opum-output-styles:Plain English - Advanced` | `Plain English - Advanced` |
 
 The two columns are not interchangeable. With only the plugin installed, the bare `Plain English - Advanced` resolves to nothing. If you move from a hand-copied install to the plugin, update your `outputStyle` value to the plugin form before you delete the copied files.
 
@@ -82,7 +84,7 @@ Copy names from the table, not from the section headings earlier in this README.
 Use these values if you set the style by hand rather than through `/config`. Put it in `~/.claude/settings.json` for a user-wide default, or in a project's `.claude/settings.json` / `.claude/settings.local.json` for one repo:
 
 ```json
-{ "outputStyle": "plain-english-styles:Plain English - Advanced" }
+{ "outputStyle": "opum-output-styles:Plain English - Advanced" }
 ```
 
 **A name that no file provides fails silently.** Claude Code prints no error and no warning. It runs Default and says nothing. On the machine these styles were written on, a global `outputStyle` naming a style no file provided ran Default across every project but one, for months, unnoticed. That is the whole reason the confirm step exists.
