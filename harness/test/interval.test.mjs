@@ -299,3 +299,52 @@ test('both intervals report zero dropped when no row errored', () => {
   assert.deepEqual(pairedInterval(rows, rows, { getValue: r => r.v }).dropped, { before: 0, after: 0 })
   assert.equal(singleSampleInterval(rows, { getValue: r => r.v }).dropped, 0)
 })
+
+// ---------- the two pooling gaps COS-30 left open (COS-35) ----------
+// pairedInterval checked each side was single-style but never that the two
+// sides matched, and singleSampleInterval had no style check at all. Its key
+// is case alone, so a two-style rows.json averaged both styles into each case.
+
+const styled = (styleId, caseId, v, model = 'opus') => ({ caseId, model, styleId, v })
+
+test('pairedInterval throws when each side is single-style but the two styles differ, naming both', () => {
+  const before = [styled('plain-english-intermediate', 'c1', 1), styled('plain-english-intermediate', 'c2', 1)]
+  const after = [styled('plain-english-advanced', 'c1', 2), styled('plain-english-advanced', 'c2', 2)]
+  assert.throws(
+    () => pairedInterval(before, after, { getValue: r => r.v }),
+    /pairedInterval: beforeRows are plain-english-intermediate but afterRows are plain-english-advanced — filter both sides to the same style before comparing/
+  )
+})
+
+test('pairedInterval names a side with no styleId when only the other side has one', () => {
+  const before = [{ caseId: 'c1', model: 'opus', v: 1 }, { caseId: 'c2', model: 'opus', v: 1 }]
+  const after = [styled('plain-english-advanced', 'c1', 2), styled('plain-english-advanced', 'c2', 2)]
+  assert.throws(
+    () => pairedInterval(before, after, { getValue: r => r.v }),
+    /beforeRows are \(no styleId\) but afterRows are plain-english-advanced/
+  )
+})
+
+test('pairedInterval still accepts two sides that hold the same single style', () => {
+  const before = [styled('plain-english-advanced', 'c1', 1), styled('plain-english-advanced', 'c2', 1)]
+  const after = [styled('plain-english-advanced', 'c1', 3), styled('plain-english-advanced', 'c2', 3)]
+  assert.equal(pairedInterval(before, after, { getValue: r => r.v }).mean, 2)
+})
+
+test('singleSampleInterval throws when its rows span multiple styles, naming them', () => {
+  const rows = [
+    styled('plain-english-intermediate', 'c1', 1), styled('plain-english-intermediate', 'c2', 2),
+    styled('plain-english-advanced', 'c1', 9), styled('plain-english-advanced', 'c2', 9)
+  ]
+  assert.throws(
+    () => singleSampleInterval(rows, { getValue: r => r.v }),
+    /singleSampleInterval: rows span multiple styles \(plain-english-advanced, plain-english-intermediate\) — filter to a single style before taking an interval/
+  )
+})
+
+test('singleSampleInterval still accepts single-style rows, with or without a styleId', () => {
+  const rows = [styled('plain-english-advanced', 'c1', 4), styled('plain-english-advanced', 'c2', 8)]
+  assert.equal(singleSampleInterval(rows, { getValue: r => r.v }).mean, 6)
+  const bare = [{ caseId: 'c1', v: 4 }, { caseId: 'c2', v: 8 }]
+  assert.equal(singleSampleInterval(bare, { getValue: r => r.v }).mean, 6)
+})
