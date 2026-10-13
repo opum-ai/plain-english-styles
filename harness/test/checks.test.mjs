@@ -1,6 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { CHECKS, DIAGRAM_NODES, VIEWS, scoreDeterministic, sentences, codeBlocks, diagramLabels, diagramNodes, mermaidBlocks, viewsOf, producedReply, hasTurnText } from '../src/checks.mjs'
 import { splitTurn } from '../src/run.mjs'
 import { judge } from '../src/judge.mjs'
@@ -30,7 +32,9 @@ test('code_block_size exempts a mermaid fence at every level', () => {
   assert.equal(CHECKS.code_block_size.run(diagram, beginner).score, 1)
 
   const advanced = { ...C, maxCodeLines: 10 }
-  const bigDiagram = '```mermaid\n' + Array.from({ length: 30 }, (_, i) => `  n${i} --> n${i + 1}`).join('\n') + '\n```'
+  // The fence opens with its diagram type: a headerless one is not a diagram
+  // (see the PES-8 edge test below), so it would be counted as code.
+  const bigDiagram = '```mermaid\nflowchart LR\n' + Array.from({ length: 30 }, (_, i) => `  n${i} --> n${i + 1}`).join('\n') + '\n```'
   assert.equal(CHECKS.code_block_size.run(bigDiagram, advanced).score, 1)
 })
 
@@ -682,6 +686,58 @@ test('the harness mermaid is the exact version the plugin vendors', () => {
     readFileSync(new URL('../node_modules/mermaid/package.json', import.meta.url), 'utf8'),
   ).version
   assert.equal(resolved, vendored, 'harness mermaid and the vendored browser build must be the same version')
+})
+
+// ---------- edges carried into PES-8, each with the decision it forced ----------
+
+test('two_options_max does not read a bare "tell me" as free text', () => {
+  // Edge carried from PES-5: FREE_TEXT_LINE matched a bare "tell me", so a real
+  // third option worded "Option C: tell me to add a cache tier" — an instruction
+  // to the session, not the reader's own answer — read as free text and three
+  // options passed the cap. DECISION: the bare "tell me" was dropped from the
+  // phrase list; every remaining phrase asks the reader for their own words.
+  const t = 'Option A: index it. Option B: denormalize. '
+    + 'Option C: tell me to add a cache tier. Trade-off is cost vs speed. I recommend A.'
+  const r = CHECKS.two_options_max.run(t, C)
+  assert.equal(r.signals.cPresent, false)
+  assert.ok(r.score < 0.8, `expected the cap to cost a point, got ${r.score}`)
+  assert.match(r.evidence.join(' '), /cap is 2/)
+
+  // The line the styles actually write still reads as free text.
+  const withC = 'Option A: index it. Option B: denormalize. '
+    + 'C: tell me a different answer. Trade-off is cost vs speed. I recommend A.'
+  assert.equal(CHECKS.two_options_max.run(withC, C).signals.cPresent, true)
+})
+
+test('code_block_size counts a mermaid fence that is not a diagram', () => {
+  // Edge carried from PES-6: the exemption had no bound, so prose wearing the
+  // mermaid-fence label escaped code_block_size AND total_length. DECISION: only
+  // a fence opening with a Mermaid diagram type is exempt (isDiagramFence); a
+  // headerless one is not a diagram and stays counted as code. A header-shaped
+  // fence that still is not valid Mermaid is what diagram_parses rejects.
+  const beginner = {
+    maxSentenceWords: 20, maxParagraphSentences: 4, maxUpdateWords: 80, maxCodeLines: 0,
+    codeOnRequest: true, level: 'beginner', bannedTerms: [], defaultChecks: [],
+  }
+  const smuggled = 'Ship it.\n```mermaid\nThis is prose, not a diagram, and it goes on.\n```'
+  assert.equal(CHECKS.code_block_size.run(smuggled, beginner).score, 0)
+
+  const real = 'Ship it.\n```mermaid\nflowchart TD\n  A --> B\n```'
+  assert.equal(CHECKS.code_block_size.run(real, beginner).score, 1)
+})
+
+test('a diagram the browser parser accepts and the terminal renderer does not', () => {
+  // PES-7 recorded that diagram_parses certifies the browser renderer only. This
+  // is the divergence, measured: Mermaid's parser accepts a quadrant chart, and
+  // beautiful-mermaid — which draws the terminal art — does not, so the mod falls
+  // back to the source plus the Open diagram button.
+  const source = 'quadrantChart\n  x-axis Low --> High\n  y-axis Low --> High\n  A: [0.3, 0.6]'
+  assert.equal(CHECKS.diagram_parses.run(`\`\`\`mermaid\n${source}\n\`\`\``, C).score, 1)
+
+  const render = fileURLToPath(new URL('../../renderer/render.mjs', import.meta.url))
+  const result = JSON.parse(execFileSync(process.execPath, [render, source], { encoding: 'utf8' }))
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'unsupported-type')
 })
 
 test('the diagram helpers read what they say they read', () => {
