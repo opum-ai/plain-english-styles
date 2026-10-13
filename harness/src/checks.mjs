@@ -73,8 +73,18 @@ export function stripCode (text) {
   return text.replace(/```[\s\S]*?```/g, '\n').replace(/`[^`\n]*`/g, 'CODE')
 }
 
+/**
+ * The fenced blocks in a reply, each as `{ lang, lines }`. `lang` is the info
+ * string's first word, lower-cased ('' when the fence names none, as a bare
+ * ``` does); `lines` are the block's content lines. The language is carried so a
+ * check can tell a Mermaid diagram from hand-written code without a second
+ * parser of its own.
+ */
 export function codeBlocks (text) {
-  return [...text.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].map(m => m[1].replace(/\n$/, '').split('\n'))
+  return [...text.matchAll(/```([^\n]*)\n([\s\S]*?)```/g)].map(m => ({
+    lang: ((m[1] ?? '').trim().split(/\s+/)[0] ?? '').toLowerCase(),
+    lines: (m[2] ?? '').replace(/\n$/, '').split('\n'),
+  }))
 }
 
 export function sentences (text) {
@@ -371,15 +381,20 @@ export const CHECKS = {
     // The condition is read from the CASE, not guessed from the reply. A check
     // cannot see whether this reader asked for code, and a regex over the prompt
     // would put a guess inside a scorer whose only value is being deterministic.
+    // A ```mermaid fence is not the code a level is forbidding: it is the
+    // operator-questions skill's own required drawing, and the style files ask
+    // for one with every question. So it is exempt at EVERY level, including a
+    // cap of 0 — the diagram is the answer, not a code sample. Any other fence,
+    // named or bare, is counted as before.
     run: (text, c, caseDef) => {
-      const blocks = codeBlocks(text)
+      const blocks = codeBlocks(text).filter(b => b.lang !== 'mermaid')
       if (!blocks.length) return { score: 1, evidence: [] }
       if (c.codeOnRequest && caseDef?.requestsCode) {
         return { score: 1, evidence: [`${blocks.length} code block(s); the case asks for code and this level states no length for a requested one`] }
       }
       if (c.maxCodeLines === 0) return { score: 0, evidence: [`${blocks.length} code block(s) shown; this level shows none`] }
-      const bad = blocks.filter(b => b.length > c.maxCodeLines)
-      return { score: 1 - bad.length / blocks.length, evidence: bad.map(b => `${b.length} lines vs cap ${c.maxCodeLines}`) }
+      const bad = blocks.filter(b => b.lines.length > c.maxCodeLines)
+      return { score: 1 - bad.length / blocks.length, evidence: bad.map(b => `${b.lines.length} lines vs cap ${c.maxCodeLines}`) }
     }
   },
 
