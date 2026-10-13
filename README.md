@@ -95,6 +95,16 @@ Ask for something the style visibly shapes — a status update — and check the
 
 For a decisive check, use a canary: add a line to the style body telling Claude to open every reply with a distinctive token, start a session, and see whether it obeys. Remove it afterwards. Asking the model to describe its own system prompt is unreliable.
 
+## Operator questions and diagrams
+
+Two pieces ship beside the styles. Neither changes an installed style, and both arrive with a plugin install.
+
+**The `operator-questions` skill** (`skills/operator-questions/`) shapes one decision question for the person who decides: A and B with one recommendation, a free-text C, the trade-offs on cost, quality and speed, and one Mermaid diagram, sized to the active style's level. It then files the question in Quest and records the answer, writing a Lore ADR when the decision is architecturally significant.
+
+**The diagram mod** (`hooks/register.tsx`, with `renderer/render.mjs`) draws every closed Mermaid fence in an assistant message in place: Unicode art on the terminal, SVG on desktop, VS Code and mobile. A diagram type the bundled renderer cannot draw, or one too wide for its row, keeps its source and offers an **Open diagram** button for a browser view.
+
+**The mod needs `bun` or `node` on `PATH`** — it uses whichever it finds first to run its helper. With neither, a diagram keeps its source and the mod says so; the styles work either way. The runbook's [Known limit of the default checks](docs/runbooks/install-and-switch-an-output-style.md#known-limit-of-the-default-checks) records what the measuring harness does not yet catch.
+
 ## Going deeper
 
 - [Install and switch an output style](docs/runbooks/install-and-switch-an-output-style.md) — the full procedure, including project-scoped installs, switching, and rollback.
