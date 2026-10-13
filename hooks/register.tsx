@@ -119,11 +119,15 @@ export function altFor (kind: string): string {
  * wraps inside the row, so the check is against the drawable width, not the
  * viewport's.
  *
- * The engine exposes no constant for this, so it is the value the design's
- * ruling assumes - a diagram one cell under the viewport draws. If the engine's
- * real inset is larger, this one number is what to change.
+ * NOT MEASURED. The engine exposes no field for it, its binary's script is not
+ * readable, and the plugin test kit does not exercise a surface's paint - so
+ * this is the engine's assistant-row shape (a two-column "record" prefix with
+ * the continuation lines indented to match), not a reading taken from a live
+ * transcript. Two is the safe direction: overestimating falls back to the
+ * source one column early, underestimating would wrap. This one number is what
+ * to change when the engine's real inset is known.
  */
-export const MESSAGE_INSET = 1
+export const MESSAGE_INSET = 2
 
 /** The columns a diagram may take inside a transcript row of `viewportColumns`. */
 export function artColumns (viewportColumns: number): number {

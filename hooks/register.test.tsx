@@ -76,24 +76,31 @@ describe('chooseDrawing', () => {
 
 describe('artColumns and the width boundary', () => {
   const COLUMNS = 80
+  const DRAWABLE = artColumns(COLUMNS) // 80 - MESSAGE_INSET
 
   test('takes the transcript row inset off the viewport width', () => {
-    expect(artColumns(COLUMNS)).toBe(COLUMNS - MESSAGE_INSET)
+    expect(MESSAGE_INSET).toBe(2) // the engine's two-column row prefix
+    expect(DRAWABLE).toBe(COLUMNS - MESSAGE_INSET)
   })
 
-  test('art at viewport.columns - 1 draws in place and does not wrap', () => {
-    const art = { ...OK, unicode: 'x'.repeat(COLUMNS - 1) }
-    expect(chooseDrawing(art, 'terminal', artColumns(COLUMNS))).toBe('art')
+  test('art exactly at the drawable width draws in place and does not wrap', () => {
+    const art = { ...OK, unicode: 'x'.repeat(DRAWABLE) }
+    expect(chooseDrawing(art, 'terminal', DRAWABLE)).toBe('art')
   })
 
-  test('art that fills viewport.columns wraps, so it falls back to source + button', () => {
+  test('one cell wider than the drawable width falls back to source + button', () => {
+    const art = { ...OK, unicode: 'x'.repeat(DRAWABLE + 1) }
+    expect(chooseDrawing(art, 'terminal', DRAWABLE)).toBe('fallback')
+  })
+
+  test('art that fills the whole viewport definitely falls back', () => {
     const art = { ...OK, unicode: 'x'.repeat(COLUMNS) }
-    expect(chooseDrawing(art, 'terminal', artColumns(COLUMNS))).toBe('fallback')
+    expect(chooseDrawing(art, 'terminal', DRAWABLE)).toBe('fallback')
   })
 
   test('a multiline diagram is judged on its widest line', () => {
-    const art = { ...OK, unicode: `short\n${'y'.repeat(COLUMNS)}` }
-    expect(chooseDrawing(art, 'terminal', artColumns(COLUMNS))).toBe('fallback')
+    const art = { ...OK, unicode: `short\n${'y'.repeat(DRAWABLE + 1)}` }
+    expect(chooseDrawing(art, 'terminal', DRAWABLE)).toBe('fallback')
   })
 })
 
