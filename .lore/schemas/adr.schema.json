@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "x-lore-generator": {
-    "profileDigest": "sha256:2f3626612839ce97ed9ee4635db4dbbd35de6d5c97bdc26bf48c74470fec8b94"
+    "profileDigest": "sha256:63d799a9c74d84b7219b5d66f0dd3af6660fa96847bdf56b545d9b2528847574"
   },
   "type": "object",
   "properties": {
