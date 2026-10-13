@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { CHECKS, VIEWS, scoreDeterministic, sentences, codeBlocks, viewsOf, producedReply, hasTurnText } from '../src/checks.mjs'
+import { CHECKS, DIAGRAM_NODES, VIEWS, scoreDeterministic, sentences, codeBlocks, diagramLabels, diagramNodes, mermaidBlocks, viewsOf, producedReply, hasTurnText } from '../src/checks.mjs'
 import { splitTurn } from '../src/run.mjs'
 import { judge } from '../src/judge.mjs'
 import { throwsOnAbort, quietOnAbort } from './abort-helpers.mjs'
@@ -597,4 +597,77 @@ test('producedReply reads the whole turn, not just the final message', () => {
   // rather than read as silent — every row in the ledger's saved runs is one.
   assert.equal(producedReply({ error: null, text: 'the glued turn' }), true)
   assert.equal(producedReply({ error: null, text: '' }), false)
+})
+
+// ---------- the operator-questions checks (PES-7) ----------
+// Each is proved both ways: it passes on a conforming reply and fails on one
+// that breaks the rule it names.
+
+const BEGINNER = {
+  maxSentenceWords: 20, maxParagraphSentences: 4, maxUpdateWords: 80, maxCodeLines: 0,
+  level: 'beginner', bannedTerms: ['API', 'endpoint', 'deploy'], defaultChecks: ['no_emoji'],
+}
+
+const GOOD_QUESTION = [
+  '**Should we release today or tomorrow?** You decide, because a release cannot be taken back.',
+  '**A (Recommended):** Release tomorrow, after one more check.',
+  '**B:** Release today, with no extra check.',
+  'A is safer and costs nothing. B is one day faster.',
+  'I recommend A: the extra check finds mistakes before people see them.',
+  '**C: tell me a different answer.**',
+].join('\n')
+
+const DIAGRAM = '```mermaid\nflowchart LR\n  Q{Release when?} --> A[tomorrow, after a check]\n'
+  + '  Q --> B[today, no check]\n  A --> S[Safer]\n  B --> F[One day faster]\n```'
+
+test('question_shape passes a conforming question and fails a status update', () => {
+  assert.equal(CHECKS.question_shape.run(GOOD_QUESTION, BEGINNER).score, 1)
+
+  const status = 'I fixed the sign-in check. Tests pass. Nothing for you to do.'
+  const bad = CHECKS.question_shape.run(status, BEGINNER)
+  assert.ok(bad.score < 0.5, `expected a low score, got ${bad.score}`)
+  assert.match(bad.evidence.join(' '), /missing question/)
+})
+
+test('diagram_present wants exactly one diagram', () => {
+  assert.equal(CHECKS.diagram_present.run(`Here it is.\n${DIAGRAM}`, BEGINNER).score, 1)
+  assert.equal(CHECKS.diagram_present.run('No diagram here.', BEGINNER).score, 0)
+  const two = CHECKS.diagram_present.run(`${DIAGRAM}\n${DIAGRAM}`, BEGINNER)
+  assert.equal(two.score, 0.5)
+  assert.match(two.evidence.join(' '), /2 mermaid diagrams/)
+})
+
+test('diagram_size holds each level to its node cap', () => {
+  // The design's own Beginner example is five nodes, and Beginner's cap is 5.
+  assert.equal(DIAGRAM_NODES.beginner, 5)
+  assert.equal(CHECKS.diagram_size.run(DIAGRAM, BEGINNER).score, 1)
+
+  const six = '```mermaid\nflowchart LR\n A-->B\n B-->C\n C-->D\n D-->E\n E-->F\n```'
+  const over = CHECKS.diagram_size.run(six, BEGINNER)
+  assert.equal(over.score, 0)
+  assert.match(over.evidence.join(' '), /cap 5/)
+
+  assert.equal(CHECKS.diagram_size.run(six, { ...BEGINNER, level: 'advanced' }).score, 1)
+})
+
+test('diagram_parses accepts a real diagram and rejects a non-diagram', () => {
+  assert.equal(CHECKS.diagram_parses.run('```mermaid\nflowchart TD\n  A[Start] --> B[Done]\n```', BEGINNER).score, 1)
+
+  const r = CHECKS.diagram_parses.run('```mermaid\nthis is not a diagram at all\n```', BEGINNER)
+  assert.equal(r.score, 0)
+  assert.ok(r.evidence.length > 0, 'expected the parser reason in evidence')
+})
+
+test('diagram_labels rejects a Beginner banned term in a node label', () => {
+  assert.equal(CHECKS.diagram_labels.run('```mermaid\nflowchart TD\n  A[Start] --> B[Done]\n```', BEGINNER).score, 1)
+
+  const r = CHECKS.diagram_labels.run('```mermaid\nflowchart TD\n  A[Call the API] --> B[Done]\n```', BEGINNER)
+  assert.equal(r.score, 0)
+  assert.match(r.evidence.join(' '), /API/)
+})
+
+test('the diagram helpers read what they say they read', () => {
+  assert.equal(mermaidBlocks(`x\n${DIAGRAM}\ny`).length, 1)
+  assert.equal(diagramNodes('flowchart LR\n Q{x?} --> A[yes]'), 2)
+  assert.deepEqual(diagramLabels('flowchart TD\n A["Start here"] --> B(Done)'), ['Start here', 'Done'])
 })
