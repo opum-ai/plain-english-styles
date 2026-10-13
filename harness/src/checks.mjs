@@ -49,6 +49,24 @@ const STATED_COUNT = new RegExp(`\\b(${alt(COUNT_WORDS)})\\s+(?:\\w+\\s+){0,2}?$
 const CLAIMED_ORDINAL = new RegExp(`\\b(?:a|the|my)\\s+(${alt(ORDINAL_WORDS)})\\s+${OPTION_NOUN}\\b`, 'g')
 const ONE_MORE = new RegExp(`\\banother\\s+${OPTION_NOUN}\\b`, 'g')
 
+// The free-text line that closes a decision: a C (or "Other") label offering the
+// reader their own answer. The styles write it as "C: tell me a different
+// answer", and Claude Code's own question tool draws the same row as "Other".
+// It is not a third option being compared, so it is kept out of the count. A C
+// line offering a real third alternative carries none of these phrases and is
+// still counted, which is the both-ways line the tests hold.
+const FREE_TEXT_LINE = /(?:^|[\s(])[*_>#-]*(?:option[ \t]+)?[*_]*(c|other)\b[*_]*[ \t]*[:.–—-][ \t]*[*_]*[^\n]{0,80}?\b(different answer|your own answer|own answer|answer differently|tell me|free[- ]?text|anything else)\b/i
+
+/**
+ * The label a free-text line closing a decision is written under ("c" or
+ * "other"), or null when the reply offers none. A C line that offers a real
+ * third alternative is not free text and returns null.
+ */
+export function freeTextOption (text) {
+  const m = FREE_TEXT_LINE.exec(String(text))
+  return m ? (m[1] ?? '').toLowerCase() : null
+}
+
 // ---------- text utilities ----------
 
 export function stripCode (text) {
@@ -438,7 +456,13 @@ export const CHECKS = {
     // is not the reply offering the reader a choice.
     run: text => {
       const t = stripCode(text).toLowerCase()
+      // The free-text C line is a way out of a false choice, not a third option:
+      // every style now closes a decision with one, and counting it as an option
+      // would penalise the reply for following the rule. Reported as a signal
+      // (cPresent) as well, for the question_shape check and the judge.
+      const freeText = freeTextOption(t)
       const labelled = new Set([...t.matchAll(/option\s+([a-d1-4])\b/g)].map(m => m[1]))
+      if (freeText) labelled.delete('c')
       const stated = STATED_COUNT.exec(t)
       // "a third approach" states its own ordinal; take the highest claimed.
       const ordinals = [...t.matchAll(CLAIMED_ORDINAL)].map(m => ORDINAL_WORDS[m[1]])
@@ -459,7 +483,7 @@ export const CHECKS = {
       else if (counted > 2) ev.push(`~${counted} options claimed (cap is 2)`)
       if (!hasReco) ev.push('no recommendation')
       if (!hasTradeoff) ev.push('no trade-off comparison')
-      return { score: Math.min(1, score), evidence: ev }
+      return { score: Math.min(1, score), evidence: ev, signals: { cPresent: freeText !== null } }
     }
   },
 
