@@ -12,8 +12,42 @@ test('sentences ignores code fences', () => {
   assert.equal(sentences(t).length, 2)
 })
 
-test('codeBlocks counts lines', () => {
-  assert.deepEqual(codeBlocks('```js\na\nb\nc\n```').map(b => b.length), [3])
+test('codeBlocks counts lines and carries the fence language', () => {
+  const blocks = codeBlocks('```js\na\nb\nc\n```')
+  assert.deepEqual(blocks.map(b => b.lines.length), [3])
+  assert.deepEqual(blocks.map(b => b.lang), ['js'])
+  assert.deepEqual(codeBlocks('```mermaid\ngraph TD\nA-->B\n```').map(b => b.lang), ['mermaid'])
+  assert.deepEqual(codeBlocks('```\nplain\n```').map(b => b.lang), [''])
+})
+
+// PES-6. A Mermaid fence is the question skill's required drawing, not the code
+// a level forbids, so it is exempt at every level — including Beginner's cap of
+// 0. Both ways: the diagram never counts, and a real code block still does.
+test('code_block_size exempts a mermaid fence at every level', () => {
+  const beginner = { ...C, level: 'beginner', maxCodeLines: 0 }
+  const diagram = 'Here it is.\n```mermaid\nflowchart TD\n  A --> B\n  B --> C\n```\nThat is the plan.'
+  assert.equal(CHECKS.code_block_size.run(diagram, beginner).score, 1)
+
+  const advanced = { ...C, maxCodeLines: 10 }
+  const bigDiagram = '```mermaid\n' + Array.from({ length: 30 }, (_, i) => `  n${i} --> n${i + 1}`).join('\n') + '\n```'
+  assert.equal(CHECKS.code_block_size.run(bigDiagram, advanced).score, 1)
+})
+
+test('code_block_size still counts a non-mermaid block at the same level', () => {
+  const beginner = { ...C, level: 'beginner', maxCodeLines: 0 }
+  const js = 'Try this.\n```js\nconst x = 1\n```\nDone.'
+  assert.equal(CHECKS.code_block_size.run(js, beginner).score, 0)
+
+  // Mixed: the diagram is exempt, the code block still costs the point.
+  const mixed = '```mermaid\nflowchart TD\n A-->B\n```\nAnd the patch:\n```js\nconst x = 1\n```'
+  const r = CHECKS.code_block_size.run(mixed, beginner)
+  assert.equal(r.score, 0)
+  assert.match(r.evidence.join(' '), /1 code block/)
+})
+
+test('total_length still excludes a mermaid fence, so a diagram adds no words', () => {
+  const withDiagram = 'I fixed it.\n```mermaid\nflowchart TD\n  A --> B\n  B --> C\n  C --> D\n```'
+  assert.equal(CHECKS.total_length.run(withDiagram, C).score, 1)
 })
 
 test('sentence_length scores the failing fraction', () => {
