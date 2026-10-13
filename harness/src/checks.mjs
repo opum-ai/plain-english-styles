@@ -51,13 +51,33 @@ const STATED_COUNT = new RegExp(`\\b(${alt(COUNT_WORDS)})\\s+(?:\\w+\\s+){0,2}?$
 const CLAIMED_ORDINAL = new RegExp(`\\b(?:a|the|my)\\s+(${alt(ORDINAL_WORDS)})\\s+${OPTION_NOUN}\\b`, 'g')
 const ONE_MORE = new RegExp(`\\banother\\s+${OPTION_NOUN}\\b`, 'g')
 
+// A fence counts as the question's required diagram only when it OPENS with a
+// Mermaid diagram type. Added in PES-8: without it any prose wearing the
+// ```mermaid label escaped both code_block_size (which exempts the diagram at
+// every level) and total_length (which drops every fence), so text could leave
+// the word budget by mislabelling itself. A headerless fence is not a diagram,
+// so it stays counted as code; a fence that has the header but is not valid
+// Mermaid is what diagram_parses rejects.
+const MERMAID_HEADER = /^[ \t]*(?:flowchart|graph|stateDiagram(?:-v2)?|sequenceDiagram|classDiagram|erDiagram|xychart(?:-beta)?|quadrantChart|gantt|timeline|pie|journey|mindmap|gitGraph|block-beta|packet-beta|architecture-beta|kanban|sankey-beta|C4Context|requirementDiagram|zenuml)\b/i
+
+/** True when a code block is the question skill's diagram fence. */
+export function isDiagramFence (block) {
+  return block.lang === 'mermaid' && MERMAID_HEADER.test(block.lines[0] ?? '')
+}
+
 // The free-text line that closes a decision: a C (or "Other") label offering the
 // reader their own answer. The styles write it as "C: tell me a different
 // answer", and Claude Code's own question tool draws the same row as "Other".
 // It is not a third option being compared, so it is kept out of the count. A C
 // line offering a real third alternative carries none of these phrases and is
 // still counted, which is the both-ways line the tests hold.
-const FREE_TEXT_LINE = /(?:^|[\s(])[*_>#-]*(?:option[ \t]+)?[*_]*(c|other)\b[*_]*[ \t]*[:.–—-][ \t]*[*_]*[^\n]{0,80}?\b(different answer|your own answer|own answer|answer differently|tell me|free[- ]?text|anything else)\b/i
+// The phrases all name an ANSWER the reader gives. A bare "tell me" was in this
+// list and was taken out in PES-8: "Option C: tell me to add a cache tier" is a
+// real third option that tells the SESSION what to do, and reading it as free
+// text let three options through the cap. Every remaining phrase asks the reader
+// for their own words, so the second option keeps matching ("C: tell me a
+// different answer" still matches through "different answer").
+const FREE_TEXT_LINE = /(?:^|[\s(])[*_>#-]*(?:option[ \t]+)?[*_]*(c|other)\b[*_]*[ \t]*[:.–—-][ \t]*[*_]*[^\n]{0,80}?\b(different answer|your own answer|own answer|answer differently|tell me another|free[- ]?text|anything else)\b/i
 
 /**
  * The label a free-text line closing a decision is written under ("c" or
@@ -455,13 +475,15 @@ export const CHECKS = {
     // The condition is read from the CASE, not guessed from the reply. A check
     // cannot see whether this reader asked for code, and a regex over the prompt
     // would put a guess inside a scorer whose only value is being deterministic.
-    // A ```mermaid fence is not the code a level is forbidding: it is the
-    // operator-questions skill's own required drawing, and the style files ask
-    // for one with every question. So it is exempt at EVERY level, including a
-    // cap of 0 — the diagram is the answer, not a code sample. Any other fence,
-    // named or bare, is counted as before.
+    // A ```mermaid fence that opens with a diagram type is not the code a level
+    // is forbidding: it is the operator-questions skill's own required drawing,
+    // and the style files ask for one with every question. So it is exempt at
+    // EVERY level, including a cap of 0 — the diagram is the answer, not a code
+    // sample. Any other fence, named or bare, is counted as before; a
+    // ```mermaid fence that does not open with a diagram type is not a diagram
+    // (isDiagramFence), so prose cannot leave the word budget in that coat.
     run: (text, c, caseDef) => {
-      const blocks = codeBlocks(text).filter(b => b.lang !== 'mermaid')
+      const blocks = codeBlocks(text).filter(b => !isDiagramFence(b))
       if (!blocks.length) return { score: 1, evidence: [] }
       if (c.codeOnRequest && caseDef?.requestsCode) {
         return { score: 1, evidence: [`${blocks.length} code block(s); the case asks for code and this level states no length for a requested one`] }

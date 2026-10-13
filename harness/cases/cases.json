@@ -311,5 +311,80 @@
       "code_block_size"
     ],
     "judge": "Neither option is clearly better and the prompt gives no numbers. Does the reply still make one clear recommendation, say plainly that it is close or that both are poor, and name what would change the pick — rather than hedging, listing considerations, or handing the decision back?"
+  },
+  {
+    "id": "reserve-decision-oneway",
+    "split": "reserve",
+    "agentic": false,
+    "//": "PES-8. The one-way door: dropping the table cannot be undone and the archive is incomplete. The operator-questions shape has to survive an irreversible call — two options, one recommendation, the free-text C, one diagram — rather than widening to three or handing the decision back. The five question and diagram checks are named here and on the two cases below; no earlier case names them.",
+    "prompt": "We can drop the legacy orders_v1 table now (frees 400GB; the last reader migrated last month) or keep it read-only for another quarter. Dropping it is a one-way door — re-creating it from the archive takes days and the archive is incomplete. What should we do?",
+    "checks": [
+      "sentence_length",
+      "total_length",
+      "no_filler",
+      "no_celebration",
+      "no_emoji",
+      "active_voice",
+      "two_options_max",
+      "leads_with_conclusion",
+      "no_jargon",
+      "code_block_size",
+      "question_shape",
+      "diagram_present",
+      "diagram_size",
+      "diagram_parses",
+      "diagram_labels"
+    ],
+    "judge": "Does the reply name the recommendation first, treat the drop as irreversible, give exactly two options with the free-text C beside them (C is not a third option), compare them on cost/quality/speed, and end with one Mermaid diagram — rather than hedging, listing considerations, or handing the decision back?"
+  },
+  {
+    "id": "reserve-decision-close",
+    "split": "reserve",
+    "agentic": false,
+    "//": "PES-8. The close call, with numbers on both sides so the reply can weigh them and still has to commit. reserve-decision-tie is the lose-lose with no numbers; this one is the near-tie where arithmetic narrows the gap and does not settle it.",
+    "prompt": "Two ways to cut CI time: raise the runner size (costs +$400 a month, takes the suite from 22 minutes to 14) or split the suite into two parallel jobs (free, takes it to 16 minutes, but a flaky shard means occasional retries). They are close. What should we do?",
+    "checks": [
+      "sentence_length",
+      "total_length",
+      "no_filler",
+      "no_celebration",
+      "no_emoji",
+      "active_voice",
+      "two_options_max",
+      "leads_with_conclusion",
+      "no_jargon",
+      "code_block_size",
+      "question_shape",
+      "diagram_present",
+      "diagram_size",
+      "diagram_parses",
+      "diagram_labels"
+    ],
+    "judge": "Is the call named as close in the first line, one option recommended anyway with a single reason, the one fact that would flip the pick named, and the reply built as two options plus the free-text C with one Mermaid diagram — rather than a survey of considerations?"
+  },
+  {
+    "id": "reserve-decision-lose-lose",
+    "split": "reserve",
+    "agentic": false,
+    "//": "PES-8. Two poor options, this time with quantities, so the reply must weigh a real cost against a real risk and still pick. Distinct from reserve-decision-tie, whose whole point is that there are NO numbers to weigh.",
+    "prompt": "We can ship the checkout fix tonight with no staging run — the bug is costing signups every hour — or hold the release two days for a staging pass, during which the churn continues but a regression would hit every checkout. Both choices are bad. What should we do?",
+    "checks": [
+      "sentence_length",
+      "total_length",
+      "no_filler",
+      "no_celebration",
+      "no_emoji",
+      "active_voice",
+      "two_options_max",
+      "leads_with_conclusion",
+      "no_jargon",
+      "code_block_size",
+      "question_shape",
+      "diagram_present",
+      "diagram_size",
+      "diagram_parses",
+      "diagram_labels"
+    ],
+    "judge": "Does the reply say plainly that both options are bad, pick one anyway with a reason drawn from the numbers given, name what would change the pick, and show exactly two options plus the free-text C with one Mermaid diagram — rather than refusing to choose or inventing a third way out?"
   }
 ]
