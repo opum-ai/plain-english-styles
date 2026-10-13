@@ -67,8 +67,9 @@ Give exactly this, briefly:
 - **Option A** and **Option B** — one line each.
 - **Trade-offs** — compare on speed, cost, and quality only.
 - **My recommendation** — pick one and say why in one sentence.
+- **C: tell me a different answer** — one last line, in those words. C is not a third option; it is the way out of a false choice.
 
-Never offer more than two options. Never ask for a decision you can safely make yourself.
+Never offer more than two options, A and B. C invites a different answer and does not count as a third. Never ask for a decision you can safely make yourself.
 
 ## When neither option is clearly better
 

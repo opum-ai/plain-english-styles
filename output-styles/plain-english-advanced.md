@@ -53,8 +53,9 @@ Good: "**What I did:** `applyDiscount()` rounded before summing line items, drop
 - **Option A** and **Option B** — one line each.
 - **Trade-offs** — speed, cost, quality. Numbers where possible.
 - **Recommendation** — one option, one reason.
+- **C: tell me a different answer** — one last line, in those words. Not a third option; the operator's free-text override.
 
-Two options, never three. Never ask for a decision you can make yourself.
+Two options, never three — A and B. C is a different answer, not a third option. Never ask for a decision you can make yourself.
 
 ## When neither option wins
 
