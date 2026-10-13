@@ -1,5 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { CHECKS, DIAGRAM_NODES, VIEWS, scoreDeterministic, sentences, codeBlocks, diagramLabels, diagramNodes, mermaidBlocks, viewsOf, producedReply, hasTurnText } from '../src/checks.mjs'
 import { splitTurn } from '../src/run.mjs'
 import { judge } from '../src/judge.mjs'
@@ -664,6 +665,23 @@ test('diagram_labels rejects a Beginner banned term in a node label', () => {
   const r = CHECKS.diagram_labels.run('```mermaid\nflowchart TD\n  A[Call the API] --> B[Done]\n```', BEGINNER)
   assert.equal(r.score, 0)
   assert.match(r.evidence.join(' '), /API/)
+})
+
+// diagram_parses must certify what the browser view actually renders. The
+// harness's own mermaid and the vendored dist/mermaid.min.js are two copies of
+// the same library, so a version drift between them would let the check pass a
+// diagram the product cannot draw. This holds them together: bump one and this
+// fails until the other follows.
+test('the harness mermaid is the exact version the plugin vendors', () => {
+  const notices = readFileSync(new URL('../../renderer/licenses/THIRD-PARTY-NOTICES.md', import.meta.url), 'utf8')
+  // (?<![\w-]) keeps "beautiful-mermaid@1.1.3" from matching as "mermaid@…".
+  const vendored = /(?<![\w-])mermaid@(\d+\.\d+\.\d+)/.exec(notices)?.[1]
+  assert.ok(vendored, 'expected a mermaid@x.y.z version in renderer/licenses/THIRD-PARTY-NOTICES.md')
+
+  const resolved = JSON.parse(
+    readFileSync(new URL('../node_modules/mermaid/package.json', import.meta.url), 'utf8'),
+  ).version
+  assert.equal(resolved, vendored, 'harness mermaid and the vendored browser build must be the same version')
 })
 
 test('the diagram helpers read what they say they read', () => {
