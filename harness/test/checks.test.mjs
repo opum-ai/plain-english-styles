@@ -107,6 +107,42 @@ test('two_options_max sees prose option sprawl without labels', () => {
   assert.equal(CHECKS.two_options_max.run(justTwo, C).score, 1)
 })
 
+// PES-5. Every style now closes a decision with a free-text C line. It is a way
+// out of a false choice, not a third option, so it must not cost the reply the
+// cap point — and a real third lettered option must still trip it. Both
+// directions here, plus the C-present signal the check now reports.
+test('two_options_max does not count a free-text C line as an option', () => {
+  const withC = 'Option A: index it. Option B: denormalize. '
+    + 'Option C: tell me a different answer. Trade-off is cost vs speed. I recommend A.'
+  const r = CHECKS.two_options_max.run(withC, C)
+  assert.equal(r.score, 1)
+  assert.equal(r.signals.cPresent, true)
+  assert.deepEqual(r.evidence, [])
+})
+
+test('two_options_max still trips on a real third lettered option', () => {
+  const realThird = 'Option A: index it. Option B: denormalize. Option C: add a cache tier. '
+    + 'Trade-off is cost vs speed. I recommend A.'
+  const r = CHECKS.two_options_max.run(realThird, C)
+  assert.ok(r.score < 0.8, `expected the cap to cost a point, got ${r.score}`)
+  assert.equal(r.signals.cPresent, false)
+  assert.match(r.evidence.join(' '), /cap is 2/)
+})
+
+test('two_options_max reads the bare C line the styles write, with no "Option"', () => {
+  const bare = 'Option A: index it. Option B: denormalize. Trade-off is cost vs speed. '
+    + 'I recommend A.\nC: tell me a different answer.'
+  const r = CHECKS.two_options_max.run(bare, C)
+  assert.equal(r.score, 1)
+  assert.equal(r.signals.cPresent, true)
+})
+
+test('two_options_max reads an Other row as free text too', () => {
+  const other = 'Option A: index it. Option B: denormalize. Trade-off is cost vs speed. '
+    + 'I recommend A.\nOther: typing your own answer is fine.'
+  assert.equal(CHECKS.two_options_max.run(other, C).signals.cPresent, true)
+})
+
 // Connectives were in the sprawl detection and were taken back out. They cost
 // the exact reply the label-blindness rewrite existed to protect, and they
 // never caught anything: across the 96 re-scorable saved rows carrying this
