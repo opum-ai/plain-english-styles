@@ -8,6 +8,6 @@
   },
   "homepage": "https://github.com/opum-ai/plain-english-styles",
   "repository": "https://github.com/opum-ai/plain-english-styles",
-  "license": "MIT",
+  "license": "MIT AND EPL-2.0 AND BSD-2-Clause",
   "keywords": ["output-style", "plain-english", "simplified-technical-english", "communication"]
 }

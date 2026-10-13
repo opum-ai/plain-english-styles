@@ -2,8 +2,7 @@
   "name": "plain-english-styles-renderer",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "description": "Build inputs for ./render.mjs. Not needed to run the plugin - the committed bundle and the vendored mermaid.js are what ship.",
+  "description": "Build inputs for ./render.mjs. Not needed to run the plugin - the committed bundle, the vendored elkjs and the vendored mermaid.js are what ship.",
   "scripts": {
     "build": "node build.mjs"
   },

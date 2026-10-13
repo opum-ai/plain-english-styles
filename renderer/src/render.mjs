@@ -19,6 +19,11 @@ import {
 // The design's limit: a fence longer than this is left as source.
 const MAX_SOURCE = 20000
 
+// beautiful-mermaid's SVG embeds a remote Google Fonts `@import`. The design
+// refuses any drawing that leaves the machine, so the import is stripped: the
+// diagram keeps its geometry and falls back to a local font.
+const REMOTE_IMPORT = /@import\s+url\((['"])https?:\/\/[^'"]*\1\)\s*;?/g
+
 // The types beautiful-mermaid draws in the pane. quadrantChart, gantt and
 // timeline are deliberately absent - the design sends those to the browser
 // view, which uses the vendored mermaid.js, not this helper.
@@ -61,7 +66,8 @@ export function render (source) {
   try {
     // colorMode 'none' keeps the art plain text; the surface paints it.
     const unicode = renderMermaidASCII(text, { colorMode: 'none' })
-    const svg = renderMermaidSVG(text, { transparent: true })
+    // Strip any remote @import so the drawn SVG fetches nothing.
+    const svg = renderMermaidSVG(text, { transparent: true }).replace(REMOTE_IMPORT, '')
     return { ok: true, kind, unicode, svg }
   } catch (error) {
     return {
