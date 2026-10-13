@@ -10,7 +10,7 @@
  * fallback: the source kept, the line naming what is missing, and the button.
  */
 import { describe, expect, test } from 'claude-code/testing'
-import { altFor, chooseDrawing, escapeHtml, htmlPage, scanFences, widest } from './register'
+import { altFor, artColumns, chooseDrawing, escapeHtml, htmlPage, MESSAGE_INSET, scanFences, widest } from './register'
 
 const OK = { ok: true as const, kind: 'flowchart', unicode: '┌──┐\n│ab│\n└──┘', svg: '<svg/>' }
 const CLOSED = 'Here it is:\n```mermaid\nflowchart TD\n  A --> B\n```\nThat is the plan.'
@@ -71,6 +71,29 @@ describe('chooseDrawing', () => {
   })
   test('an svg over the element cap falls back', () => {
     expect(chooseDrawing({ ...OK, svg: 'x'.repeat(131073) }, 'desktop', 80)).toBe('fallback')
+  })
+})
+
+describe('artColumns and the width boundary', () => {
+  const COLUMNS = 80
+
+  test('takes the transcript row inset off the viewport width', () => {
+    expect(artColumns(COLUMNS)).toBe(COLUMNS - MESSAGE_INSET)
+  })
+
+  test('art at viewport.columns - 1 draws in place and does not wrap', () => {
+    const art = { ...OK, unicode: 'x'.repeat(COLUMNS - 1) }
+    expect(chooseDrawing(art, 'terminal', artColumns(COLUMNS))).toBe('art')
+  })
+
+  test('art that fills viewport.columns wraps, so it falls back to source + button', () => {
+    const art = { ...OK, unicode: 'x'.repeat(COLUMNS) }
+    expect(chooseDrawing(art, 'terminal', artColumns(COLUMNS))).toBe('fallback')
+  })
+
+  test('a multiline diagram is judged on its widest line', () => {
+    const art = { ...OK, unicode: `short\n${'y'.repeat(COLUMNS)}` }
+    expect(chooseDrawing(art, 'terminal', artColumns(COLUMNS))).toBe('fallback')
   })
 })
 

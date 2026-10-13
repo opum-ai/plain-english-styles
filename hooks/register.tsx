@@ -113,6 +113,23 @@ export function altFor (kind: string): string {
   return `Mermaid ${kind} diagram`
 }
 
+/**
+ * The cells a terminal transcript row takes away from `viewport.columns`: the
+ * row's own left indent and right gutter. Art that fills `viewport.columns`
+ * wraps inside the row, so the check is against the drawable width, not the
+ * viewport's.
+ *
+ * The engine exposes no constant for this, so it is the value the design's
+ * ruling assumes - a diagram one cell under the viewport draws. If the engine's
+ * real inset is larger, this one number is what to change.
+ */
+export const MESSAGE_INSET = 1
+
+/** The columns a diagram may take inside a transcript row of `viewportColumns`. */
+export function artColumns (viewportColumns: number): number {
+  return Math.max(1, viewportColumns - MESSAGE_INSET)
+}
+
 /** How one rendered diagram is drawn on a surface. */
 export type Drawing = 'art' | 'svg' | 'fallback'
 
@@ -255,7 +272,7 @@ export const register: Register = (on, options) => {
               ? 'This diagram is wider than the pane; open it in the browser.'
               : 'This diagram is too large; open it in the browser.'
 
-      const decision = chooseDrawing(result, surface, width)
+      const decision = chooseDrawing(result, surface, artColumns(width))
       const node = ((): RenderNode => {
         if (result !== undefined && result.ok) {
           if (decision === 'art') {
