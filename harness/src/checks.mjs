@@ -1,6 +1,8 @@
 // Deterministic scorers. Each check maps 1:1 onto a rule the style file
 // actually states, so a failure names the violated rule and quotes evidence.
 // No model calls here: cheap, reproducible, and safe to run every iteration.
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
 const FILLER = [
   'leverage', 'leveraging', 'robust', 'seamless', 'seamlessly', 'delve', 'utilize',
@@ -65,6 +67,78 @@ const FREE_TEXT_LINE = /(?:^|[\s(])[*_>#-]*(?:option[ \t]+)?[*_]*(c|other)\b[*_]
 export function freeTextOption (text) {
   const m = FREE_TEXT_LINE.exec(String(text))
   return m ? (m[1] ?? '').toLowerCase() : null
+}
+
+// ---------- the diagram checks (question_shape and friends) ----------
+
+// The node cap the design gives each level for a question's diagram.
+export const DIAGRAM_NODES = { beginner: 5, intermediate: 8, advanced: 12 }
+
+// The three trade-off axes, as words. The literal three ("cost", "quality",
+// "speed") are what Intermediate and Advanced write in the table header;
+// Beginner's worked example writes them in everyday words ("safer", "costs
+// nothing", "one day faster"), so the concepts are matched, not only the labels.
+const TRADEOFF = {
+  cost: /\bcosts?\b|\bcheap|\bprice|\bexpens|\$\s?\d|\bfree\b/,
+  quality: /\bquality\b|\bbetter\b|\bworse\b|\bsafer\b|\brisk|\breliab/,
+  speed: /\bspeed\b|\bfaster\b|\bslower\b|\bquicker\b|\bsooner\b|\bday\b|\btoday\b|\btomorrow\b/,
+}
+
+/** The sources of the ```mermaid fences in a reply, in order. */
+export function mermaidBlocks (text) {
+  return codeBlocks(text).filter(b => b.lang === 'mermaid').map(b => b.lines.join('\n'))
+}
+
+/**
+ * A proxy for a diagram's node count: an id followed by a shape opener
+ * (`A[..]`, `B{..}`, `C(..)`), an id beside an arrow, and a lone declaration
+ * line (state and class diagrams write an id alone). A proxy on purpose — the
+ * cap is about how much the reader must hold, and a full parse of every id is
+ * what `diagram_parses` is for.
+ */
+export function diagramNodes (source) {
+  const ARROW = '-->|---|==>|-\\\\.->|\\\\.->|--x|--o'
+  const ids = new Set()
+  for (const m of source.matchAll(/(^|[\s(>|])([A-Za-z_][\w-]*)\s*[\[({>]/g)) ids.add(m[2])
+  for (const m of source.matchAll(new RegExp(`([A-Za-z_][\\w-]*)\\s*(?:${ARROW})`, 'g'))) ids.add(m[1])
+  for (const m of source.matchAll(new RegExp(`(?:${ARROW})\\s*\\|[^|]*\\|\\s*([A-Za-z_][\\w-]*)`, 'g'))) ids.add(m[1])
+  for (const m of source.matchAll(new RegExp(`(?:${ARROW})\\s*([A-Za-z_][\\w-]*)`, 'g'))) ids.add(m[1])
+  for (const line of source.split('\n')) {
+    const t = line.trim()
+    if (/^[A-Za-z_][\w-]*$/.test(t)) ids.add(t)
+  }
+  return ids.size
+}
+
+/** The text inside each node's shape — the labels the reader sees. */
+export function diagramLabels (source) {
+  const labels = []
+  for (const m of source.matchAll(/[\[({]+([^\])}]*)[\])}]+/g)) {
+    const label = (m[1] ?? '').replace(/^["']|["']$/g, '').trim()
+    if (label) labels.push(label)
+  }
+  return labels
+}
+
+const MERMAID_PARSE_CLI = fileURLToPath(new URL('./mermaid-parse.mjs', import.meta.url))
+
+/**
+ * Parse one source with Mermaid's own parser, in a child process (see
+ * mermaid-parse.mjs for why the parse cannot run here: it is asynchronous and
+ * needs a DOM, while a check in this harness is synchronous).
+ */
+function parsesWithMermaid (source) {
+  try {
+    execFileSync(process.execPath, [MERMAID_PARSE_CLI], {
+      input: source,
+      stdio: ['pipe', 'ignore', 'pipe'],
+      timeout: 60000,
+    })
+    return { ok: true, reason: '' }
+  } catch (error) {
+    const stderr = error && error.stderr ? String(error.stderr) : ''
+    return { ok: false, reason: (stderr || (error && error.message) || 'parse failed').slice(0, 200) }
+  }
 }
 
 // ---------- text utilities ----------
@@ -527,6 +601,84 @@ export const CHECKS = {
       const first = sentences(text)[0] ?? ''
       const hedge = /^(i'?ll |let me |i'?m going to |i will |sure|okay|alright|to (start|begin)|before )/i.test(first)
       return { score: hedge ? 0 : 1, evidence: hedge ? [first.slice(0, 120)] : [] }
+    }
+  },
+
+  // ---------- the operator-questions checks (PES-7) ----------
+  // These fire only where a case names them in caseDef.checks. None is in a
+  // style's defaultChecks: a status update carries no question and no diagram,
+  // and scoring it against this shape would fail every ordinary reply.
+
+  question_shape: {
+    reads: 'final',
+    describe: () => 'a question line, A, B, a recommendation, C, and cost/quality/speed',
+    run: text => {
+      const t = stripCode(text)
+      const low = t.toLowerCase()
+      // A label reads as A/B at a line start, after markdown emphasis, or after
+      // "Option". The optional parenthetical is "(Recommended)".
+      const hasLabel = letter =>
+        new RegExp(`(^|\\n|\\*\\*|\\boption\\s)\\s*${letter}\\b[^\\n]{0,40}?[:.\\u2014]`, 'i').test(t)
+      const parts = {
+        question: /(^|\n)\s*\**[^?\n]{8,}\?/m.test(t),
+        a: hasLabel('a'),
+        b: hasLabel('b'),
+        recommendation: /\brecommend|\bi'd pick\b|\bmy pick\b|\bgo with\b|\bi suggest\b/.test(low),
+        c: freeTextOption(t) !== null,
+        tradeoffs: Object.values(TRADEOFF).every(re => re.test(low)),
+      }
+      const missing = Object.entries(parts).filter(([, ok]) => !ok).map(([k]) => k)
+      return { score: Number((1 - missing.length / 6).toFixed(3)), evidence: missing.map(m => `missing ${m}`) }
+    }
+  },
+
+  diagram_present: {
+    reads: 'final',
+    describe: () => 'one Mermaid diagram',
+    run: text => {
+      const n = mermaidBlocks(text).length
+      if (n === 1) return { score: 1, evidence: [] }
+      if (n === 0) return { score: 0, evidence: ['no mermaid diagram'] }
+      return { score: 0.5, evidence: [`${n} mermaid diagrams; the shape is one`] }
+    }
+  },
+
+  diagram_size: {
+    reads: 'final',
+    describe: c => `diagram within ${DIAGRAM_NODES[c.level] ?? DIAGRAM_NODES.intermediate} nodes`,
+    // Presence is diagram_present's job, so no diagram is not this check's miss.
+    run: (text, c) => {
+      const cap = DIAGRAM_NODES[c.level] ?? DIAGRAM_NODES.intermediate
+      const bad = mermaidBlocks(text).filter(src => diagramNodes(src) > cap)
+      return { score: bad.length ? 0 : 1, evidence: bad.map(src => `${diagramNodes(src)} nodes vs cap ${cap}`) }
+    }
+  },
+
+  diagram_parses: {
+    reads: 'final',
+    describe: () => 'the diagram parses with Mermaid',
+    run: text => {
+      const bad = mermaidBlocks(text).map(parsesWithMermaid).filter(r => !r.ok)
+      return { score: bad.length ? 0 : 1, evidence: bad.map(r => r.reason) }
+    }
+  },
+
+  diagram_labels: {
+    reads: 'final',
+    describe: c => `no banned term in a diagram label (${c.level} level)`,
+    run: (text, c) => {
+      const banned = c.bannedTerms ?? []
+      if (!banned.length) return { score: 1, evidence: [] }
+      const hits = []
+      for (const src of mermaidBlocks(text)) {
+        for (const label of diagramLabels(src)) {
+          for (const term of banned) {
+            const re = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')
+            if (re.test(label)) hits.push(`${term} in "${label.slice(0, 40)}"`)
+          }
+        }
+      }
+      return { score: hits.length ? 0 : 1, evidence: hits.slice(0, 5) }
     }
   }
 }
