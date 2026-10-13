@@ -105,3 +105,15 @@ For a decisive check, use a canary: add a line to the style body telling Claude 
 - [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/) — sentence length, active voice, and one-word-one-meaning rules.
 - ELI5 principles from Reddit's [r/explainlikeimfive](https://www.reddit.com/r/explainlikeimfive/) — plain words, analogies, match the listener's level.
 - [Claude Code output styles documentation](https://code.claude.com/docs/en/output-styles) — file format and installation.
+
+## Licence
+
+The plugin's own code — the output styles, the operator-questions skill and the diagram hook — is **MIT**. See [LICENSE](LICENSE).
+
+The diagram renderer also ships third-party code, so the plugin's manifest records the whole set as the SPDX expression `MIT AND EPL-2.0 AND BSD-2-Clause` (`.claude-plugin/plugin.json`). Which part is under which licence:
+
+- `renderer/render.mjs` — the plugin's own bundle, containing **beautiful-mermaid** (MIT) and **entities** (BSD-2-Clause).
+- `renderer/vendor/elk.bundled.js` — **elkjs** 0.11.1 (**EPL-2.0**), shipped unmodified as its own file, imported by `render.mjs`, never concatenated into it.
+- `renderer/vendor/mermaid.min.js` — **mermaid** 11.17.2 (MIT), shipped unmodified, for the browser view.
+
+Versions, source links and the licence texts are in [renderer/licenses/THIRD-PARTY-NOTICES.md](renderer/licenses/THIRD-PARTY-NOTICES.md).
