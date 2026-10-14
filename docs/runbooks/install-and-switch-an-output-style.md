@@ -102,6 +102,40 @@ Repeat steps 2 and 3. Beginner for a quick status check, advanced when reviewing
 an architecture change. There is no per-model setting and no reason to want one —
 one file serves every model.
 
+## The skill and the diagram mod
+
+The plugin ships two pieces beside the styles. Neither changes an installed style,
+and both arrive with a plugin install.
+
+- **`operator-questions`** (`skills/operator-questions/`) — the skill that shapes
+  a decision question for the person who decides: A and B with one recommendation,
+  a free-text C, the trade-offs on cost, quality and speed, and one Mermaid
+  diagram, sized to the active style's level. It then files the question in Quest
+  and records the answer, writing a Lore ADR when the decision is architecturally
+  significant.
+- **The diagram mod** (`hooks/register.tsx`, with `renderer/render.mjs`) — draws
+  every closed Mermaid fence in an assistant message in place: Unicode art on the
+  terminal, SVG on desktop, VS Code and mobile. A diagram type the bundled
+  renderer cannot draw, or one too wide for its row, keeps its source and offers
+  an **Open diagram** button that opens a self-contained HTML page in the browser.
+
+**The mod needs `bun` or `node` on `PATH`.** It runs its helper with whichever it
+finds first. With neither, a diagram keeps its source and the mod says so; nothing
+else about the plugin changes, and the three styles work either way.
+
+## Known limit of the default checks
+
+The harness's `code_block_size` exempts a ` ```mermaid ` fence only when the fence
+**opens with a Mermaid diagram type**. The two checks that close the rest of the
+gap — `diagram_parses` (Mermaid's own parser accepts the source) and
+`diagram_size` (node count within the level's cap) — are **opt-in per case**,
+named by the decision cases in `harness/cases/cases.json`.
+
+So in an ordinary reply, a fence whose tag is `mermaid`, whose first line is
+`flowchart TD`, and whose body is prose still leaves the word budget untouched by
+`code_block_size` and `total_length`. That is a known limit of the **default**
+checks, not a claim that the gap is closed everywhere.
+
 ## Rollback
 
 Set `outputStyle` to `"Default"`, or remove the key, and start a new session.
